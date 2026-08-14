@@ -8,6 +8,9 @@ img{max-width:100%}
 .project-row:focus-visible{outline-offset:-3px}
 .portrait-frame img{backface-visibility:hidden;transform:translateZ(0) scale(1.02)}
 
+/* The current portrait source is 280×373. Keep it prominent without enlarging it so far that it turns visibly soft. */
+@media (min-width:981px){.portrait-rig{width:min(28vw,380px)}}
+
 @media (hover:none){
   .button:hover{transform:none}
   .project-row:hover{padding-left:2px;padding-right:2px}
@@ -18,12 +21,16 @@ img{max-width:100%}
 
 @media (max-width:640px){
   html{scroll-padding-top:72px}
-  .topbar{padding-top:env(safe-area-inset-top);height:calc(64px + env(safe-area-inset-top))}
+  .topbar{padding-top:env(safe-area-inset-top);height:calc(64px + env(safe-area-inset-top));grid-template-columns:auto 1fr;gap:14px}
+  .topbar nav{display:flex;justify-self:end;gap:14px;min-width:0}
+  .topbar nav a{display:inline-flex;align-items:center;min-height:44px;font-size:10px}
+  .topbar nav a:after{bottom:5px}
+  .linkedin-link{display:none}
   .hero{padding-top:calc(64px + env(safe-area-inset-top));min-height:100svh}
   .hero-stage{min-height:calc(100svh - 82px - env(safe-area-inset-top))}
   .hero-type{inset:10% -5vw 31%;padding-top:4.5vh}
   .hero-type span{line-height:.8}
-  .portrait-rig{width:min(58vw,320px);bottom:28vh}
+  .portrait-rig{width:min(58vw,280px);bottom:28vh}
   .hero-copy{padding-bottom:max(2vh,env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(9,9,9,.96) 0%,rgba(9,9,9,.82) 58%,transparent 100%);padding-top:36px;margin-top:-36px}
   .hero-copy h1{max-width:94%;text-wrap:balance}
   .hero-copy>p:last-of-type{max-width:92%}
@@ -37,7 +44,9 @@ img{max-width:100%}
 
 @media (max-width:390px){
   .wordmark{font-size:12px}
-  .linkedin-link{font-size:9px}
+  .wordmark i{width:16px}
+  .topbar nav{gap:10px}
+  .topbar nav a{font-size:9px}
   .hero-kicker{font-size:7px}
   .hero-type span{font-size:clamp(58px,19vw,76px)}
   .hero-type span:nth-child(3){font-size:clamp(38px,11vw,48px);margin-left:6vw}
@@ -52,7 +61,7 @@ img{max-width:100%}
   .hero-type{inset:7% -4vw 35%;padding-top:2vh}
   .hero-type span{font-size:clamp(54px,17vw,80px)}
   .hero-type span:nth-child(3){font-size:clamp(34px,10vw,46px);margin-top:1vh}
-  .portrait-rig{width:min(49vw,250px);bottom:31vh}
+  .portrait-rig{width:min(49vw,245px);bottom:31vh}
   .hero-copy h1{font-size:clamp(23px,7vw,31px);max-width:90%}
   .hero-copy>p:last-of-type{display:none}
   .hero-actions{margin-top:12px}
@@ -60,4 +69,5 @@ img{max-width:100%}
 
 @media (prefers-reduced-motion:reduce){
   .portrait-frame img{transform:scale(1.02)}
+  .topbar nav a:after{transition:none}
 }
