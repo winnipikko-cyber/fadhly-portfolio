@@ -14,7 +14,7 @@ Personal portfolio for Fadhly Aziez Jalaluddin.
 1. ChoSSI
 2. SAMAR
 3. CLOSER
-4. Mausu
+4. Mausu Bouqet
 5. Diablo Carpet360°
 
 ArticoGolf is intentionally excluded from the portfolio.
