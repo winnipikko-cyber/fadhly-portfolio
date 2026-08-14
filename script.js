@@ -1,3 +1,8 @@
+const polishSheet = document.createElement('link');
+polishSheet.rel = 'stylesheet';
+polishSheet.href = './polish.css';
+document.head.appendChild(polishSheet);
+
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
 
@@ -15,10 +20,11 @@ const progress = document.getElementById('progress');
 const updateProgress = () => {
   if (!progress || reduced) return;
   const max = document.documentElement.scrollHeight - innerHeight;
-  progress.style.width = `${max > 0 ? (scrollY / max) * 100 : 0}%`;
+  progress.style.width = `${max > 0 ? Math.min(100, Math.max(0, (scrollY / max) * 100)) : 0}%`;
 };
 addEventListener('scroll', updateProgress, { passive: true });
 addEventListener('resize', updateProgress, { passive: true });
+addEventListener('orientationchange', updateProgress, { passive: true });
 updateProgress();
 
 const hover = document.getElementById('project-hover');
@@ -29,6 +35,7 @@ if (hover && finePointer && !reduced) {
       hover.classList.add('active');
     });
     row.addEventListener('mouseleave', () => hover.classList.remove('active'));
+    row.addEventListener('focus', () => hover.classList.remove('active'));
   });
   addEventListener('pointermove', (e) => {
     hover.style.left = `${e.clientX}px`;
