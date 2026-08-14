@@ -1,4 +1,5 @@
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = window.matchMedia('(pointer: fine)').matches;
 
 const io = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -17,10 +18,11 @@ const updateProgress = () => {
   progress.style.width = `${max > 0 ? (scrollY / max) * 100 : 0}%`;
 };
 addEventListener('scroll', updateProgress, { passive: true });
+addEventListener('resize', updateProgress, { passive: true });
 updateProgress();
 
 const hover = document.getElementById('project-hover');
-if (hover && matchMedia('(pointer:fine)').matches && !reduced) {
+if (hover && finePointer && !reduced) {
   document.querySelectorAll('.project-row').forEach((row) => {
     row.addEventListener('mouseenter', () => {
       hover.querySelector('span').textContent = row.dataset.project || 'View project';
@@ -35,9 +37,10 @@ if (hover && matchMedia('(pointer:fine)').matches && !reduced) {
 }
 
 const rig = document.getElementById('portrait-rig');
-if (rig && !reduced) {
+if (rig && finePointer && !reduced) {
   let active = false, sx = 0, sy = 0, dx = 0, dy = 0;
   const settle = () => {
+    if (!active) return;
     active = false; dx = 0; dy = 0;
     rig.animate([
       { transform: rig.style.transform || 'translateX(-50%)' },
@@ -47,7 +50,7 @@ if (rig && !reduced) {
     rig.style.transform = 'translateX(-50%)';
   };
   rig.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'touch' && Math.abs(e.movementY) > 3) return;
+    if (e.button !== 0) return;
     active = true; sx = e.clientX; sy = e.clientY; rig.setPointerCapture?.(e.pointerId);
   });
   rig.addEventListener('pointermove', (e) => {
