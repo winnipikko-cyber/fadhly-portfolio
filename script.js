@@ -124,6 +124,14 @@ if (caseMatch) {
     link.target = '_blank';
     link.rel = 'noreferrer';
     link.textContent = projectLink.label;
+    link.style.color = '#f0ede7';
+    link.style.textDecoration = 'none';
+    link.style.fontSize = '11px';
+    link.style.lineHeight = '1.5';
+    link.style.textAlign = 'right';
+    link.style.transition = 'color .2s ease';
+    link.addEventListener('mouseenter', () => { link.style.color = 'var(--red)'; });
+    link.addEventListener('mouseleave', () => { link.style.color = '#f0ede7'; });
     row.append(label, link);
     caseMeta.appendChild(row);
   }
