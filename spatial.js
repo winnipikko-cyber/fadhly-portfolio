@@ -1,3 +1,4 @@
+// Signature spatial transition adapted from the approved motion reference.
 (() => {
   const bridge = document.getElementById('spatial-bridge');
   if (!bridge) return;
