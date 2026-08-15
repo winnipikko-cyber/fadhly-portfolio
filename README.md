@@ -5,7 +5,8 @@ Personal portfolio for Fadhly Aziez Jalaluddin.
 ## Direction
 - Project-first, not CV-first
 - Bold black / white / crimson editorial art direction
-- Real portrait and real project information
+- Real high-resolution portrait and real project information
+- One restrained spatial scroll transition between hero and selected work
 - No AI-looking decorative motifs or generic SaaS styling
 - Responsive desktop + mobile
 - Accessible motion with `prefers-reduced-motion`
