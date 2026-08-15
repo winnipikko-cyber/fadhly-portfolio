@@ -91,3 +91,40 @@ if (rig && finePointer && !reduced) {
     rig.addEventListener(type, settle);
   });
 }
+
+const caseLinks = {
+  chossi: {
+    href: 'https://chossi-academy.winnipikko.chatgpt.site/',
+    label: 'Open project ↗',
+    meta: 'Project link'
+  },
+  closer: {
+    href: 'https://closer-mausu.vercel.app/',
+    label: 'Open live site ↗',
+    meta: 'Live product'
+  },
+  mausu: {
+    href: 'https://mausu-bouqet.vercel.app/',
+    label: 'Open live site ↗',
+    meta: 'Live product'
+  }
+};
+
+const caseMatch = window.location.pathname.match(/\/work\/([^/]+)\/?$/);
+if (caseMatch) {
+  const projectLink = caseLinks[caseMatch[1]];
+  const caseMeta = document.querySelector('.case-meta');
+  if (projectLink && caseMeta) {
+    const row = document.createElement('div');
+    row.className = 'case-live-meta';
+    const label = document.createElement('b');
+    label.textContent = projectLink.meta;
+    const link = document.createElement('a');
+    link.href = projectLink.href;
+    link.target = '_blank';
+    link.rel = 'noreferrer';
+    link.textContent = projectLink.label;
+    row.append(label, link);
+    caseMeta.appendChild(row);
+  }
+}
