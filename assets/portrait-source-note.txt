@@ -1,1 +1,0 @@
-Final hero portrait source is the user-provided transparent cutout. Binary asset is committed separately.
