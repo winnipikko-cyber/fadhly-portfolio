@@ -64,6 +64,49 @@ if (hover && finePointer && !reduced) {
   }, { passive: true });
 }
 
+/* Touch devices do not have hover, so give the project list a scroll-linked active state instead of leaving it static. */
+const projectRows = [...document.querySelectorAll('.project-row')];
+if (projectRows.length && !finePointer && !reduced) {
+  let projectFrame = 0;
+
+  const renderProjectFocus = () => {
+    projectFrame = 0;
+    const targetY = window.innerHeight * 0.47;
+    let closest = null;
+    let closestDistance = Infinity;
+
+    projectRows.forEach((row) => {
+      const rect = row.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const visible = rect.bottom > 72 && rect.top < window.innerHeight - 24;
+      const distance = Math.abs(center - targetY);
+      if (visible && distance < closestDistance) {
+        closest = row;
+        closestDistance = distance;
+      }
+    });
+
+    projectRows.forEach((row) => row.classList.toggle('mobile-active', row === closest));
+  };
+
+  const scheduleProjectFocus = () => {
+    if (projectFrame) return;
+    projectFrame = requestAnimationFrame(renderProjectFocus);
+  };
+
+  projectRows.forEach((row) => {
+    row.addEventListener('touchstart', () => row.classList.add('is-pressed'), { passive: true });
+    ['touchend', 'touchcancel'].forEach((type) => {
+      row.addEventListener(type, () => row.classList.remove('is-pressed'), { passive: true });
+    });
+  });
+
+  addEventListener('scroll', scheduleProjectFocus, { passive: true });
+  addEventListener('resize', scheduleProjectFocus, { passive: true });
+  addEventListener('orientationchange', scheduleProjectFocus, { passive: true });
+  scheduleProjectFocus();
+}
+
 const rig = document.getElementById('portrait-rig');
 if (rig && finePointer && !reduced) {
   let active = false;
