@@ -3,6 +3,17 @@ const finePointerQuery = window.matchMedia('(pointer: fine)');
 const reduced = reducedQuery.matches;
 const finePointer = finePointerQuery.matches;
 
+/* Hero must never depend on reveal timing to be readable. Also serve the portrait from the deployed site instead of a raw GitHub hotlink. */
+const hero = document.querySelector('.hero');
+if (hero) {
+  hero.querySelectorAll('.reveal').forEach((el) => el.classList.add('visible'));
+  const heroPortrait = hero.querySelector('.portrait-frame img');
+  if (heroPortrait) {
+    heroPortrait.src = './assets/fadhly-portrait-hq.webp';
+    heroPortrait.removeAttribute('srcset');
+  }
+}
+
 const revealElements = document.querySelectorAll('.reveal');
 if (reduced || !('IntersectionObserver' in window)) {
   revealElements.forEach((el) => el.classList.add('visible'));
