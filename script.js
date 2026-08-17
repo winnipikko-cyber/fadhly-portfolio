@@ -1,17 +1,20 @@
+const grungeTheme = document.createElement('link');
+grungeTheme.rel = 'stylesheet';
+grungeTheme.href = './hero-grunge.css';
+document.head.appendChild(grungeTheme);
+
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const finePointerQuery = window.matchMedia('(pointer: fine)');
 const reduced = reducedQuery.matches;
 const finePointer = finePointerQuery.matches;
 
-/* Final hero portrait: exact user-provided transparent cutout, served locally. */
+/* Keep the approved cutout available as a fallback, while the hero presentation layer uses the grunge artwork. */
 const FINAL_PORTRAIT = './assets/fadhly-portrait-final.avif';
 const portraitStyle = document.createElement('style');
 portraitStyle.textContent = `
   #portrait-rig:before,.portrait-frame:after{display:none!important}
   .portrait-frame{height:auto!important;aspect-ratio:2/3!important;background:transparent!important;background-image:none!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
   .portrait-frame img{display:block!important;width:100%!important;height:100%!important;opacity:1!important;object-fit:contain!important;object-position:center bottom!important;filter:grayscale(1) contrast(1.04)!important;transform:none!important}
-  @media(max-width:700px){#portrait-rig{width:min(70vw,320px)!important;top:5.5vh!important}}
-  @media(max-width:390px){#portrait-rig{width:min(72vw,292px)!important;top:5vh!important}}
 `;
 document.head.appendChild(portraitStyle);
 
