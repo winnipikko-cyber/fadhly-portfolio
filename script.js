@@ -3,6 +3,12 @@ grungeTheme.rel = 'stylesheet';
 grungeTheme.href = './hero-grunge.css';
 document.head.appendChild(grungeTheme);
 
+const motionTheme = document.createElement('link');
+motionTheme.rel = 'stylesheet';
+motionTheme.href = './motion.css';
+document.head.appendChild(motionTheme);
+document.documentElement.classList.add('motion-ready');
+
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const finePointerQuery = window.matchMedia('(pointer: fine)');
 const reduced = reducedQuery.matches;
@@ -26,6 +32,7 @@ if (hero) {
     heroPortrait.src = FINAL_PORTRAIT;
     heroPortrait.removeAttribute('srcset');
   }
+  requestAnimationFrame(() => requestAnimationFrame(() => hero.classList.add('hero-motion-ready')));
 }
 
 const revealElements = document.querySelectorAll('.reveal');
@@ -111,6 +118,210 @@ if (projectRows.length && !finePointer && !reduced) {
   addEventListener('orientationchange', scheduleProjectFocus, { passive: true });
   scheduleProjectFocus();
 }
+
+/* Richer interaction layer. Everything is transform/opacity based and respects reduced motion. */
+const clamp01 = (value) => Math.min(1, Math.max(0, value));
+const topbar = document.querySelector('.topbar');
+const contact = document.querySelector('.contact');
+const contactWord = document.querySelector('.contact-word');
+const about = document.querySelector('.about');
+const process = document.querySelector('.process');
+const caseShowcase = document.querySelector('.case-showcase');
+const capItems = [...document.querySelectorAll('.cap-item')];
+
+const motionTargets = [
+  ...document.querySelectorAll('.section-head h2, .cap-intro h2, .cap-item, .about-title, .about-copy > p, .contact-inner, footer > *, .case-hero h1, .case-lede, .case-meta, .case-showcase, .case-copy section, .result, .next-case')
+];
+
+motionTargets.forEach((el, index) => {
+  el.classList.add('motion-target');
+  el.style.setProperty('--motion-delay', `${(index % 4) * 65}ms`);
+});
+
+if (reduced || !('IntersectionObserver' in window)) {
+  motionTargets.forEach((el) => el.classList.add('motion-seen'));
+} else {
+  const motionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('motion-seen');
+        motionObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -7% 0px' });
+  motionTargets.forEach((el) => motionObserver.observe(el));
+}
+
+if (!reduced && finePointer) {
+  projectRows.forEach((row) => {
+    row.addEventListener('pointermove', (event) => {
+      const rect = row.getBoundingClientRect();
+      const nx = ((event.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+      const ny = ((event.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
+      row.style.setProperty('--row-x', nx.toFixed(3));
+      row.style.setProperty('--row-y', ny.toFixed(3));
+      row.style.setProperty('--row-tilt', `${(nx * 6).toFixed(2)}deg`);
+    }, { passive: true });
+    row.addEventListener('pointerleave', () => {
+      row.style.setProperty('--row-x', '0');
+      row.style.setProperty('--row-y', '0');
+      row.style.setProperty('--row-tilt', '0deg');
+    });
+  });
+
+  document.querySelectorAll('.button').forEach((button) => {
+    button.addEventListener('pointermove', (event) => {
+      const rect = button.getBoundingClientRect();
+      const dx = event.clientX - (rect.left + rect.width / 2);
+      const dy = event.clientY - (rect.top + rect.height / 2);
+      button.style.setProperty('--mag-x', `${(dx * 0.1).toFixed(1)}px`);
+      button.style.setProperty('--mag-y', `${(dy * 0.12).toFixed(1)}px`);
+    }, { passive: true });
+    button.addEventListener('pointerleave', () => {
+      button.style.setProperty('--mag-x', '0px');
+      button.style.setProperty('--mag-y', '0px');
+    });
+  });
+
+  if (hero) {
+    hero.addEventListener('pointermove', (event) => {
+      const rect = hero.getBoundingClientRect();
+      const nx = (event.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+      const ny = (event.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+      hero.style.setProperty('--hero-shift-x', `${(nx * -16).toFixed(1)}px`);
+      hero.style.setProperty('--hero-shift-y', `${(ny * -10).toFixed(1)}px`);
+    }, { passive: true });
+    hero.addEventListener('pointerleave', () => {
+      hero.style.setProperty('--hero-shift-x', '0px');
+      hero.style.setProperty('--hero-shift-y', '0px');
+    });
+  }
+
+  if (contact) {
+    contact.addEventListener('pointermove', (event) => {
+      const rect = contact.getBoundingClientRect();
+      const nx = (event.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+      const ny = (event.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+      contact.style.setProperty('--contact-light-x', `${(nx * 60).toFixed(1)}px`);
+      contact.style.setProperty('--contact-light-y', `${(ny * 45).toFixed(1)}px`);
+    }, { passive: true });
+  }
+
+  const light = document.createElement('div');
+  light.className = 'motion-light';
+  light.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(light);
+  let lightFrame = 0;
+  let lightX = -500;
+  let lightY = -500;
+  addEventListener('pointermove', (event) => {
+    lightX = event.clientX - 170;
+    lightY = event.clientY - 170;
+    if (lightFrame) return;
+    lightFrame = requestAnimationFrame(() => {
+      lightFrame = 0;
+      light.style.transform = `translate3d(${lightX.toFixed(1)}px,${lightY.toFixed(1)}px,0)`;
+    });
+  }, { passive: true });
+}
+
+if (!finePointer) {
+  document.querySelectorAll('.button').forEach((button) => {
+    button.addEventListener('touchstart', () => button.classList.add('motion-pressed'), { passive: true });
+    ['touchend', 'touchcancel'].forEach((type) => button.addEventListener(type, () => button.classList.remove('motion-pressed'), { passive: true }));
+  });
+}
+
+const navLinks = [...document.querySelectorAll('.topbar nav a[href^="#"]')];
+if (navLinks.length && 'IntersectionObserver' in window) {
+  const navMap = new Map(navLinks.map((link) => [link.getAttribute('href')?.slice(1), link]));
+  const navSections = [...navMap.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+  const navObserver = new IntersectionObserver((entries) => {
+    const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (!visible) return;
+    navLinks.forEach((link) => link.classList.remove('is-active'));
+    navMap.get(visible.target.id)?.classList.add('is-active');
+  }, { rootMargin: '-38% 0px -48% 0px', threshold: [0, 0.1, 0.35, 0.6] });
+  navSections.forEach((section) => navObserver.observe(section));
+}
+
+let globalMotionFrame = 0;
+const renderGlobalMotion = () => {
+  globalMotionFrame = 0;
+  const y = window.scrollY;
+  if (topbar) topbar.classList.toggle('is-scrolled', y > 24);
+  if (reduced) return;
+
+  if (hero) {
+    const rect = hero.getBoundingClientRect();
+    const p = clamp01((-rect.top) / Math.max(1, window.innerHeight));
+    hero.style.setProperty('--hero-scroll-y', `${(p * 20).toFixed(1)}px`);
+    hero.style.setProperty('--hero-scale', (1.015 + p * 0.018).toFixed(4));
+  }
+
+  if (contact && contactWord) {
+    const rect = contact.getBoundingClientRect();
+    const p = clamp01((window.innerHeight - rect.top) / Math.max(1, window.innerHeight + rect.height));
+    contact.style.setProperty('--contact-shift', `${((0.5 - p) * 150).toFixed(1)}px`);
+  }
+
+  if (about && process) {
+    const rect = about.getBoundingClientRect();
+    const p = clamp01((window.innerHeight * 0.78 - rect.top) / Math.max(1, rect.height * 0.72));
+    about.style.setProperty('--process-progress', `${(p * 100).toFixed(1)}%`);
+    about.classList.toggle('is-process-active', p > 0.16);
+  }
+
+  if (caseShowcase) {
+    const rect = caseShowcase.getBoundingClientRect();
+    const p = clamp01((window.innerHeight - rect.top) / Math.max(1, window.innerHeight + rect.height));
+    caseShowcase.style.setProperty('--case-shift', `${((0.5 - p) * 44).toFixed(1)}px`);
+  }
+
+  if (capItems.length) {
+    const targetY = window.innerHeight * 0.48;
+    let closest = null;
+    let distance = Infinity;
+    capItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      if (rect.bottom <= 64 || rect.top >= window.innerHeight - 24) return;
+      const nextDistance = Math.abs(center - targetY);
+      if (nextDistance < distance) {
+        distance = nextDistance;
+        closest = item;
+      }
+    });
+    capItems.forEach((item) => item.classList.toggle('motion-focus', item === closest));
+  }
+
+  const results = [...document.querySelectorAll('.result')];
+  if (results.length) {
+    const targetY = window.innerHeight * 0.54;
+    let closestResult = null;
+    let resultDistance = Infinity;
+    results.forEach((result) => {
+      const rect = result.getBoundingClientRect();
+      if (rect.bottom <= 70 || rect.top >= window.innerHeight - 20) return;
+      const center = rect.top + rect.height / 2;
+      const d = Math.abs(center - targetY);
+      if (d < resultDistance) {
+        resultDistance = d;
+        closestResult = result;
+      }
+    });
+    results.forEach((result) => result.classList.toggle('motion-focus', result === closestResult));
+  }
+};
+
+const scheduleGlobalMotion = () => {
+  if (globalMotionFrame) return;
+  globalMotionFrame = requestAnimationFrame(renderGlobalMotion);
+};
+addEventListener('scroll', scheduleGlobalMotion, { passive: true });
+addEventListener('resize', scheduleGlobalMotion, { passive: true });
+addEventListener('orientationchange', scheduleGlobalMotion, { passive: true });
+scheduleGlobalMotion();
 
 const caseLinks = {
   chossi: { href: 'https://chossi-academy.winnipikko.chatgpt.site/', label: 'Open project ↗', meta: 'Project link' },
