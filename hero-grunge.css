@@ -1,13 +1,22 @@
-/* Hero artwork: exact approved grunge artwork. Keep it below native width so it stays crisp instead of being enlarged. */
-.hero{position:relative!important;isolation:isolate;background:#090909!important;overflow:hidden}
+/* Hero artwork — keep the grunge collage crisp while blending it naturally into the next section. */
+.hero{
+  position:relative!important;
+  isolation:isolate;
+  background:#090909!important;
+  overflow:hidden;
+  border-bottom:0!important;
+  margin-bottom:-1px
+}
 .hero::before{
   content:"";
   position:absolute;
   inset:0;
   z-index:0;
   background-image:var(--faj-hero-art,none);
-  background-position:62% 50%;
-  background-size:min(86vw,1600px) auto;
+  /* Wider than the previous pass so the right edge no longer feels empty,
+     but still restrained enough to avoid the old punch-in crop. */
+  background-position:66% 49%;
+  background-size:min(92vw,1780px) auto;
   background-repeat:no-repeat;
   filter:saturate(.9) contrast(1.045) brightness(.99);
   transform:none;
@@ -23,8 +32,26 @@
   inset:0;
   z-index:1;
   background:
-    linear-gradient(90deg,rgba(9,9,9,.93) 0%,rgba(9,9,9,.77) 25%,rgba(9,9,9,.36) 43%,rgba(9,9,9,.07) 61%,rgba(9,9,9,.012) 100%),
-    linear-gradient(180deg,rgba(9,9,9,.12) 0%,rgba(9,9,9,0) 43%,rgba(9,9,9,.26) 100%);
+    /* protect headline readability on the left */
+    linear-gradient(90deg,
+      rgba(9,9,9,.94) 0%,
+      rgba(9,9,9,.78) 24%,
+      rgba(9,9,9,.38) 43%,
+      rgba(9,9,9,.08) 61%,
+      rgba(9,9,9,.035) 82%,
+      rgba(9,9,9,.11) 100%),
+    /* remove the hard horizontal seam — hero now dissolves into the bridge */
+    linear-gradient(180deg,
+      rgba(9,9,9,.05) 0%,
+      rgba(9,9,9,0) 58%,
+      rgba(9,9,9,.12) 70%,
+      rgba(9,9,9,.48) 86%,
+      #090909 100%),
+    /* subtle depth at the far right instead of a dead black pocket */
+    radial-gradient(48% 76% at 100% 48%,
+      rgba(196,19,47,.07) 0%,
+      rgba(35,18,20,.055) 34%,
+      rgba(9,9,9,0) 72%);
   pointer-events:none
 }
 .hero-stage{position:relative;z-index:2!important;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr)!important}
@@ -38,23 +65,38 @@
 .hero-actions .button-solid{box-shadow:0 14px 40px rgba(0,0,0,.2)}
 .scroll-cue{z-index:3}
 
-/* Preserve the parallax translation, but never scale the hero artwork. This selector intentionally outranks motion.css. */
+/* Make the hero → WORK transition continuous; no divider line. */
+.spatial-bridge{border-top:0!important;margin-top:-1px!important}
+
+/* Preserve parallax translation, never scale the artwork. */
 html.motion-ready .hero::before{
   transform:translate3d(var(--hero-shift-x),calc(var(--hero-scroll-y) + var(--hero-shift-y)),0)!important;
 }
 
 @media(min-width:1600px){
-  .hero::before{background-size:min(82vw,1600px) auto;background-position:63% 50%}
+  .hero::before{background-size:min(91vw,1780px) auto;background-position:67% 49%}
 }
+
 @media(max-width:980px){
-  .hero::before{background-size:min(94vw,1500px) auto;background-position:64% 48%}
+  .hero::before{background-size:min(96vw,1500px) auto;background-position:67% 48%}
   .hero::after{
     background:
-      linear-gradient(90deg,rgba(9,9,9,.91) 0%,rgba(9,9,9,.68) 34%,rgba(9,9,9,.20) 61%,rgba(9,9,9,.02) 100%),
-      linear-gradient(180deg,rgba(9,9,9,.14),transparent 42%,rgba(9,9,9,.38))
+      linear-gradient(90deg,
+        rgba(9,9,9,.92) 0%,
+        rgba(9,9,9,.70) 33%,
+        rgba(9,9,9,.22) 60%,
+        rgba(9,9,9,.035) 82%,
+        rgba(9,9,9,.09) 100%),
+      linear-gradient(180deg,
+        rgba(9,9,9,.08) 0%,
+        transparent 52%,
+        rgba(9,9,9,.18) 72%,
+        rgba(9,9,9,.58) 88%,
+        #090909 100%)
   }
   .hero-stage{grid-template-columns:minmax(0,1fr) minmax(0,.82fr)!important}
 }
+
 @media(max-width:700px){
   .hero{min-height:100svh!important}
   .hero::before{
@@ -67,16 +109,25 @@ html.motion-ready .hero::before{
   html.motion-ready .hero::before{transform:translate3d(0,var(--hero-scroll-y),0)!important}
   .hero::after{
     background:
-      linear-gradient(180deg,rgba(9,9,9,.025) 64px,rgba(9,9,9,0) 26svh,rgba(9,9,9,.64) 42svh,#090909 54svh,#090909 100%),
-      linear-gradient(90deg,rgba(9,9,9,.12),rgba(9,9,9,0))
+      linear-gradient(180deg,
+        rgba(9,9,9,.02) 64px,
+        rgba(9,9,9,0) 25svh,
+        rgba(9,9,9,.52) 40svh,
+        rgba(9,9,9,.88) 49svh,
+        #090909 57svh,
+        #090909 100%)
   }
   .hero-stage{padding-top:45svh!important}
   .hero-copy{max-width:100%!important;text-shadow:0 2px 24px rgba(0,0,0,.55)}
   .hero-copy .eyebrow{color:#d0cbc5!important}
   .hero-type{display:none!important}
 }
+
 @media(max-width:390px){
   .hero::before{height:41svh;background-size:contain;background-position:center top}
   .hero-stage{padding-top:43svh!important}
 }
-@media(prefers-reduced-motion:reduce){.hero::before{transform:none!important;transition:none!important}}
+
+@media(prefers-reduced-motion:reduce){
+  .hero::before{transform:none!important;transition:none!important}
+}
