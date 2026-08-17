@@ -1,19 +1,74 @@
-/* Approved hybrid direction: minimal product portfolio x underground editorial personality.
-   NOTE: the grunge AVIF currently in the repo is not a valid decodable AVIF, so the hero
-   temporarily uses the verified transparent portrait asset instead of rendering blank. */
+/* Selected hero: exact user-provided grunge artwork, loaded from local chunked WebP. */
 .hero{position:relative!important;isolation:isolate;background:#090909!important}
-.hero::before{content:"";position:absolute;inset:0;z-index:0;background:url("./assets/fadhly-portrait-final.avif") 78% 58%/auto 86% no-repeat;filter:grayscale(1) contrast(1.06);transform:scale(1.012);transform-origin:center;opacity:.98;pointer-events:none}
-.hero::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(circle at 76% 50%,rgba(196,19,47,.09),transparent 28%),linear-gradient(90deg,rgba(9,9,9,.97) 0%,rgba(9,9,9,.86) 31%,rgba(9,9,9,.48) 49%,rgba(9,9,9,.08) 70%,rgba(9,9,9,.22) 100%),linear-gradient(180deg,rgba(9,9,9,.16) 0%,rgba(9,9,9,.02) 40%,rgba(9,9,9,.48) 100%);pointer-events:none}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background-image:var(--faj-hero-art,none);
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter:saturate(.82) contrast(1.04);
+  transform:scale(1.012);
+  transform-origin:center;
+  opacity:0;
+  transition:opacity .45s ease;
+  pointer-events:none
+}
+.hero-art-ready .hero::before{opacity:.98}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(90deg,rgba(9,9,9,.92) 0%,rgba(9,9,9,.80) 27%,rgba(9,9,9,.46) 43%,rgba(9,9,9,.12) 61%,rgba(9,9,9,.04) 100%),
+    linear-gradient(180deg,rgba(9,9,9,.25) 0%,rgba(9,9,9,.02) 40%,rgba(9,9,9,.40) 100%);
+  pointer-events:none
+}
 .hero-stage{position:relative;z-index:2!important;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr)!important}
 .hero-stage:before{display:none!important}
 .portrait-rig{display:none!important}
-.hero-copy{grid-column:1!important;grid-row:1!important;width:min(690px,100%)!important;max-width:690px!important;text-shadow:0 2px 28px rgba(0,0,0,.36)}
+.hero-type{opacity:.08!important;mix-blend-mode:screen}
+.hero-copy{grid-column:1!important;grid-row:1!important;width:min(690px,100%)!important;max-width:690px!important;text-shadow:0 2px 28px rgba(0,0,0,.45)}
 .hero-copy .eyebrow{color:#c7c2bb!important}
 .hero-copy>p:last-of-type{color:#aaa59e!important}
 .hero-kicker{z-index:3;color:#a29d96!important}
 .hero-actions .button-solid{box-shadow:0 14px 40px rgba(0,0,0,.2)}
 .scroll-cue{z-index:3}
-@media(max-width:980px){.hero::before{background-position:82% 56%;background-size:auto 76%}.hero::after{background:linear-gradient(90deg,rgba(9,9,9,.95) 0%,rgba(9,9,9,.78) 36%,rgba(9,9,9,.3) 61%,rgba(9,9,9,.08) 100%),linear-gradient(180deg,rgba(9,9,9,.2),transparent 40%,rgba(9,9,9,.5))}.hero-stage{grid-template-columns:minmax(0,1fr) minmax(0,.82fr)!important}}
-@media(max-width:700px){.hero{min-height:100svh!important}.hero::before{inset:64px 0 auto 0;height:49svh;background-size:auto 46svh;background-position:67% bottom;transform:none;filter:grayscale(1) contrast(1.06)}.hero::after{background:linear-gradient(180deg,rgba(9,9,9,.08) 64px,rgba(9,9,9,.02) 31svh,rgba(9,9,9,.68) 49svh,#090909 59svh,#090909 100%),linear-gradient(90deg,rgba(9,9,9,.36),rgba(9,9,9,.02));}.hero-stage{padding-top:51svh!important}.hero-copy{max-width:100%!important;text-shadow:0 2px 24px rgba(0,0,0,.55)}.hero-copy .eyebrow{color:#d0cbc5!important}}
-@media(max-width:390px){.hero::before{height:47svh;background-size:auto 44svh;background-position:68% bottom}.hero-stage{padding-top:49svh!important}}
-@media(prefers-reduced-motion:reduce){.hero::before{transform:none!important}}
+@media(max-width:980px){
+  .hero::after{
+    background:
+      linear-gradient(90deg,rgba(9,9,9,.91) 0%,rgba(9,9,9,.70) 34%,rgba(9,9,9,.24) 61%,rgba(9,9,9,.05) 100%),
+      linear-gradient(180deg,rgba(9,9,9,.22),transparent 42%,rgba(9,9,9,.45))
+  }
+  .hero-stage{grid-template-columns:minmax(0,1fr) minmax(0,.82fr)!important}
+}
+@media(max-width:700px){
+  .hero{min-height:100svh!important}
+  .hero::before{
+    inset:64px 0 auto 0;
+    height:48svh;
+    background-size:auto 48svh;
+    background-position:70% center;
+    transform:none;
+    filter:saturate(.8) contrast(1.04)
+  }
+  .hero::after{
+    background:
+      linear-gradient(180deg,rgba(9,9,9,.06) 64px,rgba(9,9,9,.02) 29svh,rgba(9,9,9,.72) 47svh,#090909 58svh,#090909 100%),
+      linear-gradient(90deg,rgba(9,9,9,.24),rgba(9,9,9,.02))
+  }
+  .hero-stage{padding-top:50svh!important}
+  .hero-copy{max-width:100%!important;text-shadow:0 2px 24px rgba(0,0,0,.55)}
+  .hero-copy .eyebrow{color:#d0cbc5!important}
+  .hero-type{display:none!important}
+}
+@media(max-width:390px){
+  .hero::before{height:46svh;background-size:auto 46svh;background-position:72% center}
+  .hero-stage{padding-top:48svh!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero::before{transform:none!important;transition:none!important}
+}
