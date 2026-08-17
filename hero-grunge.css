@@ -1,37 +1,34 @@
-/* Selected hero: exact user-provided grunge artwork, loaded from local chunked WebP. */
+/* Hero artwork: high-quality user-provided WebP. Desktop source is 2048×1152 (16:9), sufficient for FHD without forced upscale. */
 .hero{position:relative!important;isolation:isolate;background:#090909!important;overflow:hidden}
 .hero::before{
   content:"";
   position:absolute;
   inset:0;
   z-index:0;
-  background-image:var(--faj-hero-art,none);
-  /* Deliberately smaller than cover: keeps more of the artwork visible and avoids unnecessary upscaling. */
-  background-position:60% 50%;
-  background-size:92% auto;
+  background-image:url("./assets/fadhly-hero-fhd.webp");
+  background-position:61% 50%;
+  background-size:90% auto;
   background-repeat:no-repeat;
-  filter:saturate(.86) contrast(1.055) brightness(.98);
-  transform:none;
+  filter:saturate(.9) contrast(1.045) brightness(.99);
+  transform:none!important;
   transform-origin:center;
-  opacity:0;
-  transition:opacity .45s ease;
+  opacity:1;
   pointer-events:none
 }
-.hero-art-ready .hero::before{opacity:1}
 .hero::after{
   content:"";
   position:absolute;
   inset:0;
   z-index:1;
   background:
-    linear-gradient(90deg,rgba(9,9,9,.94) 0%,rgba(9,9,9,.80) 26%,rgba(9,9,9,.42) 43%,rgba(9,9,9,.10) 61%,rgba(9,9,9,.025) 100%),
-    linear-gradient(180deg,rgba(9,9,9,.18) 0%,rgba(9,9,9,.01) 42%,rgba(9,9,9,.34) 100%);
+    linear-gradient(90deg,rgba(9,9,9,.93) 0%,rgba(9,9,9,.77) 25%,rgba(9,9,9,.38) 43%,rgba(9,9,9,.08) 61%,rgba(9,9,9,.015) 100%),
+    linear-gradient(180deg,rgba(9,9,9,.14) 0%,rgba(9,9,9,0) 43%,rgba(9,9,9,.28) 100%);
   pointer-events:none
 }
 .hero-stage{position:relative;z-index:2!important;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr)!important}
 .hero-stage:before{display:none!important}
 .portrait-rig{display:none!important}
-.hero-type{opacity:.07!important;mix-blend-mode:screen}
+.hero-type{opacity:.065!important;mix-blend-mode:screen}
 .hero-copy{grid-column:1!important;grid-row:1!important;width:min(690px,100%)!important;max-width:690px!important;text-shadow:0 2px 28px rgba(0,0,0,.45)}
 .hero-copy .eyebrow{color:#c7c2bb!important}
 .hero-copy>p:last-of-type{color:#aaa59e!important}
@@ -40,15 +37,15 @@
 .scroll-cue{z-index:3}
 
 @media(min-width:1600px){
-  .hero::before{background-size:min(88%,1760px) auto;background-position:62% 50%}
+  .hero::before{background-size:min(88%,1900px) auto;background-position:62% 50%}
 }
 
 @media(max-width:980px){
-  .hero::before{background-size:96% auto;background-position:63% 48%}
+  .hero::before{background-size:94% auto;background-position:64% 48%}
   .hero::after{
     background:
-      linear-gradient(90deg,rgba(9,9,9,.92) 0%,rgba(9,9,9,.72) 34%,rgba(9,9,9,.22) 61%,rgba(9,9,9,.035) 100%),
-      linear-gradient(180deg,rgba(9,9,9,.18),transparent 42%,rgba(9,9,9,.42))
+      linear-gradient(90deg,rgba(9,9,9,.91) 0%,rgba(9,9,9,.68) 34%,rgba(9,9,9,.20) 61%,rgba(9,9,9,.02) 100%),
+      linear-gradient(180deg,rgba(9,9,9,.14),transparent 42%,rgba(9,9,9,.38))
   }
   .hero-stage{grid-template-columns:minmax(0,1fr) minmax(0,.82fr)!important}
 }
@@ -57,29 +54,26 @@
   .hero{min-height:100svh!important}
   .hero::before{
     inset:64px 0 auto 0;
-    height:45svh;
-    /* contain prevents the mobile crop from punching in on the face/artwork */
+    height:43svh;
     background-size:contain;
     background-position:center top;
     transform:none!important;
-    filter:saturate(.86) contrast(1.05) brightness(.98)
+    filter:saturate(.9) contrast(1.045) brightness(.99)
   }
   .hero::after{
     background:
-      linear-gradient(180deg,rgba(9,9,9,.04) 64px,rgba(9,9,9,.01) 27svh,rgba(9,9,9,.68) 44svh,#090909 56svh,#090909 100%),
-      linear-gradient(90deg,rgba(9,9,9,.16),rgba(9,9,9,.01))
+      linear-gradient(180deg,rgba(9,9,9,.025) 64px,rgba(9,9,9,0) 26svh,rgba(9,9,9,.64) 42svh,#090909 54svh,#090909 100%),
+      linear-gradient(90deg,rgba(9,9,9,.12),rgba(9,9,9,0))
   }
-  .hero-stage{padding-top:47svh!important}
+  .hero-stage{padding-top:45svh!important}
   .hero-copy{max-width:100%!important;text-shadow:0 2px 24px rgba(0,0,0,.55)}
   .hero-copy .eyebrow{color:#d0cbc5!important}
   .hero-type{display:none!important}
 }
 
 @media(max-width:390px){
-  .hero::before{height:43svh;background-size:contain;background-position:center top}
-  .hero-stage{padding-top:45svh!important}
+  .hero::before{height:41svh;background-size:contain;background-position:center top}
+  .hero-stage{padding-top:43svh!important}
 }
 
-@media(prefers-reduced-motion:reduce){
-  .hero::before{transform:none!important;transition:none!important}
-}
+@media(prefers-reduced-motion:reduce){.hero::before{transform:none!important}}
