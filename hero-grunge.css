@@ -1,4 +1,4 @@
-/* Hero artwork — keep the grunge collage crisp while blending it naturally into the next section. */
+/* Hero artwork — desktop and mobile get their own composition. */
 .hero{
   position:relative!important;
   isolation:isolate;
@@ -13,8 +13,6 @@
   inset:0;
   z-index:0;
   background-image:var(--faj-hero-art,none);
-  /* Wider than the previous pass so the right edge no longer feels empty,
-     but still restrained enough to avoid the old punch-in crop. */
   background-position:66% 49%;
   background-size:min(92vw,1780px) auto;
   background-repeat:no-repeat;
@@ -32,7 +30,6 @@
   inset:0;
   z-index:1;
   background:
-    /* protect headline readability on the left */
     linear-gradient(90deg,
       rgba(9,9,9,.94) 0%,
       rgba(9,9,9,.78) 24%,
@@ -40,14 +37,12 @@
       rgba(9,9,9,.08) 61%,
       rgba(9,9,9,.035) 82%,
       rgba(9,9,9,.11) 100%),
-    /* remove the hard horizontal seam — hero now dissolves into the bridge */
     linear-gradient(180deg,
       rgba(9,9,9,.05) 0%,
       rgba(9,9,9,0) 58%,
       rgba(9,9,9,.12) 70%,
       rgba(9,9,9,.48) 86%,
       #090909 100%),
-    /* subtle depth at the far right instead of a dead black pocket */
     radial-gradient(48% 76% at 100% 48%,
       rgba(196,19,47,.07) 0%,
       rgba(35,18,20,.055) 34%,
@@ -64,11 +59,9 @@
 .hero-kicker{z-index:3;color:#a29d96!important}
 .hero-actions .button-solid{box-shadow:0 14px 40px rgba(0,0,0,.2)}
 .scroll-cue{z-index:3}
-
-/* Make the hero → WORK transition continuous; no divider line. */
 .spatial-bridge{border-top:0!important;margin-top:-1px!important}
 
-/* Preserve parallax translation, never scale the artwork. */
+/* Parallax is translation-only so the image never gets soft from scale animation. */
 html.motion-ready .hero::before{
   transform:translate3d(var(--hero-shift-x),calc(var(--hero-scroll-y) + var(--hero-shift-y)),0)!important;
 }
@@ -81,51 +74,112 @@ html.motion-ready .hero::before{
   .hero::before{background-size:min(96vw,1500px) auto;background-position:67% 48%}
   .hero::after{
     background:
-      linear-gradient(90deg,
-        rgba(9,9,9,.92) 0%,
-        rgba(9,9,9,.70) 33%,
-        rgba(9,9,9,.22) 60%,
-        rgba(9,9,9,.035) 82%,
-        rgba(9,9,9,.09) 100%),
-      linear-gradient(180deg,
-        rgba(9,9,9,.08) 0%,
-        transparent 52%,
-        rgba(9,9,9,.18) 72%,
-        rgba(9,9,9,.58) 88%,
-        #090909 100%)
+      linear-gradient(90deg,rgba(9,9,9,.92) 0%,rgba(9,9,9,.70) 33%,rgba(9,9,9,.22) 60%,rgba(9,9,9,.035) 82%,rgba(9,9,9,.09) 100%),
+      linear-gradient(180deg,rgba(9,9,9,.08) 0%,transparent 52%,rgba(9,9,9,.18) 72%,rgba(9,9,9,.58) 88%,#090909 100%)
   }
   .hero-stage{grid-template-columns:minmax(0,1fr) minmax(0,.82fr)!important}
 }
 
+/* Mobile final pass: dedicated square art + copy pulled into the image fade. */
 @media(max-width:700px){
-  .hero{min-height:100svh!important}
+  .hero{
+    min-height:100svh!important;
+    padding-top:64px!important;
+    padding-bottom:0!important;
+  }
   .hero::before{
     inset:64px 0 auto 0;
-    height:43svh;
-    background-size:contain;
+    width:100%;
+    height:min(56svh,100vw);
+    background-image:var(--faj-hero-mobile-art,var(--faj-hero-art,none));
+    background-size:min(100vw,640px) auto;
     background-position:center top;
-    filter:saturate(.9) contrast(1.045) brightness(.99)
+    background-repeat:no-repeat;
+    filter:saturate(.92) contrast(1.045) brightness(.995);
+    opacity:0
   }
-  html.motion-ready .hero::before{transform:translate3d(0,var(--hero-scroll-y),0)!important}
+  .hero-mobile-art-ready .hero::before{opacity:1}
+  .hero-art-ready:not(.hero-mobile-art-ready) .hero::before{opacity:0}
+  html.motion-ready .hero::before{
+    transform:translate3d(0,calc(var(--hero-scroll-y) * .18),0)!important
+  }
   .hero::after{
     background:
       linear-gradient(180deg,
-        rgba(9,9,9,.02) 64px,
-        rgba(9,9,9,0) 25svh,
-        rgba(9,9,9,.52) 40svh,
-        rgba(9,9,9,.88) 49svh,
-        #090909 57svh,
+        rgba(9,9,9,.01) 64px,
+        rgba(9,9,9,0) 30svh,
+        rgba(9,9,9,.12) 38svh,
+        rgba(9,9,9,.54) 47svh,
+        rgba(9,9,9,.90) 56svh,
+        #090909 66svh,
         #090909 100%)
   }
-  .hero-stage{padding-top:45svh!important}
-  .hero-copy{max-width:100%!important;text-shadow:0 2px 24px rgba(0,0,0,.55)}
-  .hero-copy .eyebrow{color:#d0cbc5!important}
+  .hero-stage{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    align-items:stretch!important;
+    min-height:calc(100svh - 64px)!important;
+    padding-top:46svh!important;
+    padding-bottom:28px!important;
+    overflow:visible!important
+  }
+  .hero-kicker{
+    display:block!important;
+    position:absolute!important;
+    top:18px!important;
+    left:0!important;
+    right:auto!important;
+    z-index:6!important;
+    color:#f1eee8!important;
+    font-size:10px!important;
+    font-weight:600!important;
+    letter-spacing:.145em!important;
+    line-height:1.25!important;
+    text-shadow:0 2px 18px rgba(0,0,0,.95)!important;
+    opacity:1!important;
+    transform:none!important
+  }
+  .hero-kicker span:first-child{display:block!important}
+  .hero-kicker span:last-child{display:none!important}
+  .hero-copy{
+    order:2!important;
+    align-self:stretch!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin-top:-4.5svh!important;
+    padding:0!important;
+    text-shadow:0 2px 24px rgba(0,0,0,.58)
+  }
+  .hero-copy .eyebrow{
+    display:block!important;
+    margin:0 0 13px!important;
+    color:#ddd9d2!important;
+    font-size:9px!important;
+    font-weight:700!important;
+    letter-spacing:.17em!important
+  }
+  .hero-copy h1{
+    max-width:100%!important;
+    font-size:clamp(36px,10.7vw,50px)!important;
+    line-height:.94!important;
+    letter-spacing:-.055em!important
+  }
+  .hero-copy>p:last-of-type{
+    max-width:92%!important;
+    margin-top:15px!important;
+    font-size:12px!important;
+    line-height:1.55!important
+  }
+  .hero-actions{margin-top:18px!important}
   .hero-type{display:none!important}
+  .hero-side-note,.scroll-cue{display:none!important}
 }
 
 @media(max-width:390px){
-  .hero::before{height:41svh;background-size:contain;background-position:center top}
-  .hero-stage{padding-top:43svh!important}
+  .hero-stage{padding-top:45svh!important}
+  .hero-copy{margin-top:-4svh!important}
+  .hero-copy h1{font-size:clamp(34px,10.4vw,42px)!important}
 }
 
 @media(prefers-reduced-motion:reduce){
