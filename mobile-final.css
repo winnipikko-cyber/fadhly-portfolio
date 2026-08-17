@@ -1,0 +1,173 @@
+/* Final mobile-only correction pass. Loaded after grunge + motion CSS by spatial.js. */
+@media (max-width:760px){
+  html body .hero{
+    min-height:auto!important;
+    padding-top:64px!important;
+    padding-bottom:0!important;
+    border-bottom:0!important;
+    overflow:hidden!important;
+  }
+
+  /* Keep the dedicated square artwork, but avoid Android GPU corruption from
+     filter + 3D transforms on a large data-URL WebP. */
+  html body .hero::before{
+    inset:64px 0 auto 0!important;
+    width:100%!important;
+    height:min(58svh,100vw)!important;
+    background-image:var(--faj-hero-mobile-art,var(--faj-hero-art,none))!important;
+    background-size:min(100vw,640px) auto!important;
+    background-position:center top!important;
+    background-repeat:no-repeat!important;
+    filter:none!important;
+    transform:none!important;
+    will-change:auto!important;
+  }
+  html.motion-ready body .hero::before{transform:none!important}
+
+  html body .hero::after{
+    background:
+      linear-gradient(180deg,
+        rgba(9,9,9,.01) 64px,
+        rgba(9,9,9,0) 27svh,
+        rgba(9,9,9,.08) 34svh,
+        rgba(9,9,9,.42) 43svh,
+        rgba(9,9,9,.82) 51svh,
+        #090909 61svh,
+        #090909 100%)!important;
+  }
+
+  html body .hero-stage{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    align-items:stretch!important;
+    min-height:auto!important;
+    padding-top:43svh!important;
+    padding-bottom:26px!important;
+    overflow:visible!important;
+  }
+
+  html body .hero-kicker{
+    display:block!important;
+    position:absolute!important;
+    top:16px!important;
+    left:0!important;
+    right:auto!important;
+    z-index:8!important;
+    color:#f7f4ef!important;
+    font-size:10px!important;
+    font-weight:700!important;
+    letter-spacing:.15em!important;
+    line-height:1.2!important;
+    opacity:1!important;
+    transform:none!important;
+    text-shadow:0 2px 18px rgba(0,0,0,.95)!important;
+  }
+  html body .hero-kicker span:first-child{display:block!important}
+  html body .hero-kicker span:last-child{display:none!important}
+
+  html body .hero-copy{
+    order:2!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin-top:-5.5svh!important;
+    padding:0!important;
+    z-index:9!important;
+    text-shadow:0 2px 24px rgba(0,0,0,.62)!important;
+  }
+  html body .hero-copy .eyebrow{
+    display:block!important;
+    margin:0 0 12px!important;
+    color:#e5e1da!important;
+    font-size:9px!important;
+    font-weight:700!important;
+    letter-spacing:.17em!important;
+  }
+  html body .hero-copy h1{
+    max-width:100%!important;
+    font-size:clamp(35px,10.5vw,48px)!important;
+    line-height:.94!important;
+    letter-spacing:-.055em!important;
+  }
+  html body .hero-copy>p:last-of-type{
+    max-width:94%!important;
+    margin-top:14px!important;
+    font-size:12px!important;
+    line-height:1.55!important;
+  }
+  html body .hero-actions{margin-top:18px!important}
+  html body .hero-side-note,
+  html body .scroll-cue,
+  html body .hero-type{display:none!important}
+
+  /* Mobile spatial bridge now behaves like the desktop scene: sticky stage,
+     perspective depth, scroll-linked approach/fan/exit. It also starts much
+     sooner because the hero no longer wastes a full viewport below the CTA. */
+  html body .spatial-bridge{
+    height:118svh!important;
+    min-height:680px!important;
+    margin-top:0!important;
+    border-top:0!important;
+    background:#090909!important;
+  }
+  html body .spatial-stage{
+    position:sticky!important;
+    top:0!important;
+    height:100svh!important;
+    min-height:0!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    overflow:hidden!important;
+    perspective:760px!important;
+    perspective-origin:50% 38%!important;
+    transform-style:preserve-3d!important;
+  }
+  html body .spatial-stage:before{
+    background:radial-gradient(circle at 50% 35%,rgba(196,19,47,.12),transparent 29%),linear-gradient(180deg,#090909 0%,#0d0d0d 58%,#090909 100%)!important;
+  }
+  html body .spatial-orbit{
+    position:absolute!important;
+    inset:0!important;
+    height:auto!important;
+    transform-style:preserve-3d!important;
+  }
+  html body .spatial-card{
+    left:50%!important;
+    top:38%!important;
+    width:clamp(96px,28vw,116px)!important;
+    opacity:0;
+    backdrop-filter:blur(7px)!important;
+    -webkit-backdrop-filter:blur(7px)!important;
+    transform-style:preserve-3d!important;
+    will-change:transform,opacity!important;
+  }
+  html body .spatial-card span{font-size:clamp(13px,4vw,16px)!important}
+  html body .spatial-word{
+    top:37%!important;
+    left:50%!important;
+    font-size:clamp(110px,37vw,175px)!important;
+    opacity:.08;
+    transform:translate(-50%,-50%) scale(.82);
+  }
+  html body .spatial-caption{
+    left:max(var(--pad),env(safe-area-inset-left))!important;
+    right:max(var(--pad),env(safe-area-inset-right))!important;
+    bottom:34px!important;
+    max-width:350px!important;
+  }
+  html body .spatial-caption strong{font-size:clamp(30px,9vw,44px)!important}
+}
+
+@media(max-width:390px){
+  html body .hero-stage{padding-top:42svh!important}
+  html body .hero-copy{margin-top:-5svh!important}
+  html body .hero-copy h1{font-size:clamp(33px,10.2vw,42px)!important}
+  html body .spatial-card{width:94px!important}
+}
+
+@media(max-width:760px) and (prefers-reduced-motion:reduce){
+  html body .spatial-bridge{height:auto!important;min-height:620px!important}
+  html body .spatial-stage{position:relative!important;height:620px!important}
+  html body .spatial-card{will-change:auto!important}
+}
