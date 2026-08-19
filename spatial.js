@@ -1,7 +1,5 @@
 // Signature spatial transition adapted from the approved motion reference.
 (() => {
-  // Load the final mobile correction after script.js has appended grunge + motion CSS.
-  // This keeps the mobile fixes authoritative without disturbing the desktop styling.
   const mobileFinal = document.createElement('link');
   mobileFinal.rel = 'stylesheet';
   mobileFinal.href = './mobile-final.css';
@@ -51,41 +49,37 @@
   };
 
   const renderMobile = (rect) => {
-    // Same visual language as desktop: cards begin deeper in Z-space, move toward
-    // the viewer, fan apart, then soften on exit. Geometry is simply compressed
-    // to fit a phone viewport.
-    const vh = Math.max(1, window.innerHeight);
     const vw = Math.max(320, window.innerWidth);
-    const travel = Math.max(1, bridge.offsetHeight - vh);
+    const travel = Math.max(1, bridge.offsetHeight - stage.offsetHeight);
     const p = clamp(-rect.top / travel);
-    const approach = clamp(p / .72);
-    const exit = clamp((p - .68) / .32);
-    const baseFan = Math.min(54, vw * .135);
-    const growFan = Math.min(72, vw * .18);
+    const approach = clamp(p / .62);
+    const exit = clamp((p - .70) / .30);
+    const baseFan = Math.min(48, vw * .12);
+    const growFan = Math.min(62, vw * .155);
 
     cards.forEach((card, index) => {
       const lane = index - 2;
       const wave = Math.sin((index + 1) * 1.23 + p * 4.2);
       const fan = lane * (baseFan + growFan * approach);
-      const x = fan + Math.sin(p * 3 + index) * 9;
-      const y = -56 + wave * (17 + 16 * approach) + lane * lane * 4;
-      const z = -470 + approach * 505 + Math.abs(lane) * -28 + exit * 95;
-      const rotY = lane * (-7 + approach * 2.6) + wave * 2.4;
-      const rotZ = lane * 2.1 - wave * 2.1;
-      const scale = .74 + approach * .30 + exit * .05;
-      const alpha = clamp((p + .08) * 2.35) * (1 - exit * .88);
+      const x = fan + Math.sin(p * 3 + index) * 7;
+      const y = -16 + wave * (11 + 12 * approach) + lane * lane * 3;
+      const z = -240 + approach * 300 + Math.abs(lane) * -18 + exit * 75;
+      const rotY = lane * (-6 + approach * 2.2) + wave * 2;
+      const rotZ = lane * 2 - wave * 1.8;
+      const scale = .88 + approach * .20 + exit * .04;
+      const alpha = clamp((p + .22) * 2.5) * (1 - exit * .85);
 
       card.style.opacity = alpha.toFixed(3);
       card.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px),calc(-50% + ${y.toFixed(1)}px),${z.toFixed(1)}px) rotateY(${rotY.toFixed(2)}deg) rotateZ(${rotZ.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
     });
 
-    const wordScale = .82 + approach * .18 + exit * .05;
-    word.style.opacity = (.055 + approach * .15 - exit * .11).toFixed(3);
+    const wordScale = .86 + approach * .15 + exit * .04;
+    word.style.opacity = (.065 + approach * .14 - exit * .10).toFixed(3);
     word.style.transform = `translate(-50%,-50%) scale(${wordScale.toFixed(3)})`;
 
-    const captionIn = clamp((p - .24) / .30);
+    const captionIn = clamp((p - .06) / .24);
     caption.style.opacity = captionIn.toFixed(3);
-    caption.style.transform = `translateY(${((1 - captionIn) * 24).toFixed(1)}px)`;
+    caption.style.transform = `translateY(${((1 - captionIn) * 16).toFixed(1)}px)`;
     stage.style.setProperty('--spatial-progress', p.toFixed(3));
   };
 
