@@ -8,8 +8,6 @@
     overflow:hidden!important;
   }
 
-  /* Keep the dedicated square artwork, but avoid Android GPU corruption from
-     filter + 3D transforms on a large data-URL WebP. */
   html body .hero::before{
     inset:64px 0 auto 0!important;
     width:100%!important;
@@ -25,15 +23,14 @@
   html.motion-ready body .hero::before{transform:none!important}
 
   html body .hero::after{
-    background:
-      linear-gradient(180deg,
-        rgba(9,9,9,.01) 64px,
-        rgba(9,9,9,0) 27svh,
-        rgba(9,9,9,.08) 34svh,
-        rgba(9,9,9,.42) 43svh,
-        rgba(9,9,9,.82) 51svh,
-        #090909 61svh,
-        #090909 100%)!important;
+    background:linear-gradient(180deg,
+      rgba(9,9,9,.01) 64px,
+      rgba(9,9,9,0) 27svh,
+      rgba(9,9,9,.08) 34svh,
+      rgba(9,9,9,.42) 43svh,
+      rgba(9,9,9,.82) 51svh,
+      #090909 61svh,
+      #090909 100%)!important;
   }
 
   html body .hero-stage{
@@ -43,7 +40,7 @@
     align-items:stretch!important;
     min-height:auto!important;
     padding-top:43svh!important;
-    padding-bottom:26px!important;
+    padding-bottom:10px!important;
     overflow:visible!important;
   }
 
@@ -95,36 +92,35 @@
     font-size:12px!important;
     line-height:1.55!important;
   }
-  html body .hero-actions{margin-top:18px!important}
+  html body .hero-actions{margin-top:18px!important;margin-bottom:0!important}
   html body .hero-side-note,
   html body .scroll-cue,
   html body .hero-type{display:none!important}
 
-  /* Mobile spatial bridge now behaves like the desktop scene: sticky stage,
-     perspective depth, scroll-linked approach/fan/exit. It also starts much
-     sooner because the hero no longer wastes a full viewport below the CTA. */
+  /* Compact mobile WORK scene: cards arrive immediately after the CTA instead of
+     spending most of a viewport far away in Z-space. */
   html body .spatial-bridge{
-    height:118svh!important;
-    min-height:680px!important;
-    margin-top:0!important;
+    height:94svh!important;
+    min-height:560px!important;
+    margin-top:-16px!important;
     border-top:0!important;
     background:#090909!important;
   }
   html body .spatial-stage{
     position:sticky!important;
     top:0!important;
-    height:100svh!important;
-    min-height:0!important;
+    height:82svh!important;
+    min-height:500px!important;
     padding:0!important;
     display:grid!important;
     place-items:center!important;
     overflow:hidden!important;
-    perspective:760px!important;
-    perspective-origin:50% 38%!important;
+    perspective:820px!important;
+    perspective-origin:50% 32%!important;
     transform-style:preserve-3d!important;
   }
   html body .spatial-stage:before{
-    background:radial-gradient(circle at 50% 35%,rgba(196,19,47,.12),transparent 29%),linear-gradient(180deg,#090909 0%,#0d0d0d 58%,#090909 100%)!important;
+    background:radial-gradient(circle at 50% 30%,rgba(196,19,47,.12),transparent 27%),linear-gradient(180deg,#090909 0%,#0d0d0d 55%,#090909 100%)!important;
   }
   html body .spatial-orbit{
     position:absolute!important;
@@ -134,8 +130,8 @@
   }
   html body .spatial-card{
     left:50%!important;
-    top:38%!important;
-    width:clamp(96px,28vw,116px)!important;
+    top:29%!important;
+    width:clamp(108px,31vw,126px)!important;
     opacity:0;
     backdrop-filter:blur(7px)!important;
     -webkit-backdrop-filter:blur(7px)!important;
@@ -144,30 +140,34 @@
   }
   html body .spatial-card span{font-size:clamp(13px,4vw,16px)!important}
   html body .spatial-word{
-    top:37%!important;
+    top:29.5%!important;
     left:50%!important;
-    font-size:clamp(110px,37vw,175px)!important;
+    font-size:clamp(112px,38vw,180px)!important;
     opacity:.08;
-    transform:translate(-50%,-50%) scale(.82);
+    transform:translate(-50%,-50%) scale(.86);
   }
   html body .spatial-caption{
     left:max(var(--pad),env(safe-area-inset-left))!important;
     right:max(var(--pad),env(safe-area-inset-right))!important;
-    bottom:34px!important;
+    top:60%!important;
+    bottom:auto!important;
     max-width:350px!important;
   }
-  html body .spatial-caption strong{font-size:clamp(30px,9vw,44px)!important}
+  html body .spatial-caption strong{font-size:clamp(30px,9vw,42px)!important}
 }
 
 @media(max-width:390px){
   html body .hero-stage{padding-top:42svh!important}
   html body .hero-copy{margin-top:-5svh!important}
   html body .hero-copy h1{font-size:clamp(33px,10.2vw,42px)!important}
-  html body .spatial-card{width:94px!important}
+  html body .spatial-bridge{min-height:530px!important}
+  html body .spatial-stage{min-height:470px!important}
+  html body .spatial-card{width:102px!important;top:28%!important}
+  html body .spatial-caption{top:59%!important}
 }
 
 @media(max-width:760px) and (prefers-reduced-motion:reduce){
-  html body .spatial-bridge{height:auto!important;min-height:620px!important}
-  html body .spatial-stage{position:relative!important;height:620px!important}
+  html body .spatial-bridge{height:auto!important;min-height:540px!important}
+  html body .spatial-stage{position:relative!important;height:540px!important}
   html body .spatial-card{will-change:auto!important}
 }
