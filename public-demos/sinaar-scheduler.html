@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sinaar Pratama Teknik — Scheduler Demo</title>
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--text:#17181a;--muted:#73777f;--line:#e8eaee;--soft:#f0f2f5;--accent:#111827;--ok:#eaf8ef;--warn:#fff6df;--danger:#fff0f0}
+  *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+  .app{max-width:1180px;margin:0 auto;padding:22px}
+  .top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.brand h1{margin:0;font-size:22px}.brand p{margin:5px 0 0;color:var(--muted);font-size:14px}.pill{background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:999px;font-size:13px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px}.stat small{color:var(--muted)}.stat b{display:block;font-size:25px;margin-top:6px}.stat span{font-size:12px;color:var(--muted)}
+  .layout{display:grid;grid-template-columns:1.45fr .75fr;gap:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}.ph{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.ph h2{font-size:16px;margin:0}.ph p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+  .controls{display:flex;gap:8px}.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:650;cursor:pointer}.btn-dark{background:#111827;color:white}.btn-light{background:var(--soft);color:#222}.btn-sm{padding:7px 10px;font-size:12px}
+  .schedule{padding:14px}.tech{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}.tech:last-child{margin-bottom:0}.tech-head{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:#fafafa;border-bottom:1px solid var(--line)}.tech-name{font-weight:750}.tech-meta{font-size:12px;color:var(--muted)}
+  .jobs{padding:10px}.job{display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;padding:10px;border-radius:11px;margin-bottom:7px;border:1px solid transparent}.job:last-child{margin-bottom:0}.job.booked{background:#f8fafc;border-color:#edf0f4}.job.free{background:var(--ok);border-color:#d7eedf}.job.urgent{background:var(--warn);border-color:#f2dfad}.time{font-weight:800;font-size:13px}.job-title{font-weight:700;font-size:13px}.job-sub{font-size:12px;color:var(--muted);margin-top:3px}.tag{font-size:11px;padding:6px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);white-space:nowrap}
+  .side{padding:14px}.callout{border:1px solid #f0d58c;background:#fff9e9;border-radius:14px;padding:14px;margin-bottom:12px}.callout b{font-size:14px}.callout p{font-size:12px;color:#6f654b;line-height:1.45;margin:7px 0 12px}.row{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.row label{font-size:12px;color:var(--muted)}.row strong{font-size:13px;text-align:right}.capacity{padding:14px;border:1px solid var(--line);border-radius:14px;margin-top:12px}.bar{height:10px;border-radius:999px;background:#eceff3;overflow:hidden;margin:10px 0 5px}.bar>div{height:100%;width:78%;background:#111827;border-radius:999px}.hint{font-size:11px;color:var(--muted)}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;padding:20px}.modal{width:min(520px,100%);background:white;border-radius:18px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.18)}.modal h3{margin:0 0 5px}.modal p{margin:0 0 16px;color:var(--muted);font-size:13px}.field{margin-bottom:12px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit}.suggest{padding:12px;border-radius:12px;background:var(--ok);border:1px solid #d7eedf;font-size:13px;margin:12px 0}.actions{display:flex;justify-content:flex-end;gap:8px}
+  .toast{position:fixed;right:18px;bottom:18px;background:#111827;color:white;padding:12px 15px;border-radius:12px;display:none;font-size:13px}
+  @media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.job{grid-template-columns:72px 1fr}.tag{grid-column:2;justify-self:start}.app{padding:12px}.ph{align-items:flex-start;gap:10px;flex-direction:column}.controls{width:100%}.controls .btn{flex:1}}@media(max-width:480px){.stats{grid-template-columns:1fr 1fr}.stat{padding:13px}.stat b{font-size:22px}.brand h1{font-size:19px}.job{grid-template-columns:1fr}.time{font-size:12px}.tag{grid-column:1}.tech-name{font-size:13px}.modal{padding:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><h1>Sinaar Pratama Teknik</h1><p>Demo penjadwalan teknisi • Kamis, 20 Agustus 2026</p></div>
+    <div class="pill">⚡ Scheduler Demo</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>Pekerjaan hari ini</small><b>5</b><span>4 terjadwal • 1 mendadak</span></div>
+    <div class="stat"><small>Tim lapangan</small><b>2</b><span>2 teknisi • 2 helper</span></div>
+    <div class="stat"><small>Slot tersedia</small><b id="slotCount">1</b><span>Sebelum pukul 17.00</span></div>
+    <div class="stat"><small>Job terselamatkan</small><b id="savedCount">1</b><span>Customer mendadak hari ini</span></div>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+      <div class="ph"><div><h2>Jadwal teknisi hari ini</h2><p>Lihat slot kosong tanpa bongkar chat satu-satu.</p></div><div class="controls"><button class="btn btn-light btn-sm" onclick="alert('Demo: pindah ke hari berikutnya')">Besok</button><button class="btn btn-dark btn-sm" onclick="openModal()">+ Customer mendadak</button></div></div>
+      <div class="schedule">
+        <div class="tech">
+          <div class="tech-head"><div><div class="tech-name">Tim A — Teknisi 1 + Helper 1</div><div class="tech-meta">Area Kesambi / Harjamukti</div></div><span class="tag">3 job</span></div>
+          <div class="jobs">
+            <div class="job booked"><div class="time">08:00–10:00</div><div><div class="job-title">Cuci AC • 2 unit</div><div class="job-sub">Ibu Rina — Kesambi</div></div><span class="tag">Selesai</span></div>
+            <div class="job booked"><div class="time">10:30–12:00</div><div><div class="job-title">Service AC tidak dingin</div><div class="job-sub">Pak Deni — Kecapi</div></div><span class="tag">Dikerjakan</span></div>
+            <div class="job urgent"><div class="time">13:00–14:30</div><div><div class="job-title">Customer mendadak • Cuci AC</div><div class="job-sub">Bu Nita — Harjamukti</div></div><span class="tag">Masuk hari ini</span></div>
+          </div>
+        </div>
+
+        <div class="tech">
+          <div class="tech-head"><div><div class="tech-name">Tim B — Teknisi 2 + Helper 2</div><div class="tech-meta">Area Kedawung / Tengah Tani</div></div><span class="tag">2 job</span></div>
+          <div class="jobs">
+            <div class="job booked"><div class="time">08:30–11:00</div><div><div class="job-title">Bongkar pasang AC • 1 unit</div><div class="job-sub">Pak Arif — Kedawung</div></div><span class="tag">Terjadwal</span></div>
+            <div class="job booked"><div class="time">12:30–15:00</div><div><div class="job-title">Cuci AC kantor • 3 unit</div><div class="job-sub">CV Maju Jaya — Tengah Tani</div></div><span class="tag">Terjadwal</span></div>
+            <div class="job free" id="freeB"><div class="time">15:15–17:00</div><div><div class="job-title">Slot tersedia</div><div class="job-sub">Bisa diisi customer mendadak</div></div><span class="tag">Kosong</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h2>Customer mendadak</h2><p>Contoh keputusan cepat tanpa geser jadwal.</p></div></div>
+      <div class="side">
+        <div class="callout"><b>⚠️ Ada permintaan service hari ini</b><p>Customer minta datang sore. Sistem langsung menunjukkan teknisi yang masih punya slot.</p><button class="btn btn-dark" style="width:100%" onclick="openModal()">Cari slot tersedia</button></div>
+        <div class="row"><label>Customer</label><strong>Bu Maya</strong></div>
+        <div class="row"><label>Lokasi</label><strong>Kesambi</strong></div>
+        <div class="row"><label>Kebutuhan</label><strong>Cuci AC 2 unit</strong></div>
+        <div class="row"><label>Estimasi</label><strong>± 90 menit</strong></div>
+        <div class="row"><label>Rekomendasi</label><strong>Tim B • 15:15</strong></div>
+        <div class="capacity"><strong>Kapasitas hari ini</strong><div class="bar"><div></div></div><div class="hint">78% terisi • masih ada ruang tanpa menggeser customer lain.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal"><div class="modal">
+  <h3>Tambah customer mendadak</h3><p>Masukkan kebutuhan dasar. Demo akan mencarikan slot yang masih kosong.</p>
+  <div class="field"><label>Nama customer</label><input id="custName" value="Bu Maya" /></div>
+  <div class="field"><label>Jenis pekerjaan</label><select id="jobType"><option>Cuci AC • 2 unit</option><option>Service AC tidak dingin</option><option>Maintenance berkala</option></select></div>
+  <div class="field"><label>Area</label><select id="area"><option>Kesambi</option><option>Harjamukti</option><option>Kedawung</option><option>Pekalipan</option></select></div>
+  <div class="suggest"><b>Rekomendasi:</b> Tim B tersedia pukul <b>15:15–17:00</b>. Tidak perlu menggeser booking lain.</div>
+  <div class="actions"><button class="btn btn-light" onclick="closeModal()">Batal</button><button class="btn btn-dark" onclick="confirmSlot()">Masukkan ke jadwal</button></div>
+</div></div>
+<div class="toast" id="toast">Customer dimasukkan ke slot Tim B • 15:15</div>
+<script>
+function openModal(){document.getElementById('modal').style.display='flex'}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function confirmSlot(){
+  const n=document.getElementById('custName').value||'Customer';
+  const el=document.getElementById('freeB');
+  el.className='job urgent';
+  el.innerHTML='<div class="time">15:15–17:00</div><div><div class="job-title">'+n+' • Cuci AC 2 unit</div><div class="job-sub">Customer mendadak • Kesambi</div></div><span class="tag">Baru masuk</span>';
+  document.getElementById('slotCount').textContent='0';
+  document.getElementById('savedCount').textContent='2';
+  closeModal(); const t=document.getElementById('toast'); t.style.display='block'; setTimeout(()=>t.style.display='none',2600)
+}
+window.onclick=e=>{if(e.target===document.getElementById('modal'))closeModal()}
+</script>
+</body>
+</html>
