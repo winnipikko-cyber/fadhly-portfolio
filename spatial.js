@@ -5,6 +5,11 @@
   mobileFinal.href = './mobile-final.css';
   document.head.appendChild(mobileFinal);
 
+  const mobileTuning = document.createElement('link');
+  mobileTuning.rel = 'stylesheet';
+  mobileTuning.href = './mobile-tuning.css';
+  document.head.appendChild(mobileTuning);
+
   const bridge = document.getElementById('spatial-bridge');
   if (!bridge) return;
 
@@ -50,36 +55,45 @@
 
   const renderMobile = (rect) => {
     const vw = Math.max(320, window.innerWidth);
-    const travel = Math.max(1, bridge.offsetHeight - stage.offsetHeight);
-    const p = clamp(-rect.top / travel);
-    const approach = clamp(p / .62);
-    const exit = clamp((p - .70) / .30);
-    const baseFan = Math.min(48, vw * .12);
-    const growFan = Math.min(62, vw * .155);
+
+    // Mobile uses a compact, non-sticky scene. Progress follows the section as it
+    // enters the viewport, so there is no long empty scroll tail after the caption.
+    const start = window.innerHeight * .82;
+    const end = -bridge.offsetHeight * .18;
+    const p = clamp((start - rect.top) / Math.max(1, start - end));
+    const approach = clamp(p / .58);
+
+    // Compute the spread from the actual viewport width. This guarantees that the
+    // outer cards stay inside the mobile viewport even at maximum approach/zoom.
+    const cardWidth = Math.min(120, Math.max(94, vw * .28));
+    const maxOuterX = Math.max(72, (vw - cardWidth - 28) / 2);
+    const step = Math.min(100, maxOuterX / 2);
 
     cards.forEach((card, index) => {
       const lane = index - 2;
-      const wave = Math.sin((index + 1) * 1.23 + p * 4.2);
-      const fan = lane * (baseFan + growFan * approach);
-      const x = fan + Math.sin(p * 3 + index) * 7;
-      const y = -16 + wave * (11 + 12 * approach) + lane * lane * 3;
-      const z = -240 + approach * 300 + Math.abs(lane) * -18 + exit * 75;
-      const rotY = lane * (-6 + approach * 2.2) + wave * 2;
-      const rotZ = lane * 2 - wave * 1.8;
-      const scale = .88 + approach * .20 + exit * .04;
-      const alpha = clamp((p + .22) * 2.5) * (1 - exit * .85);
+      const wave = Math.sin((index + 1) * 1.23 + p * 3.2);
+      const spread = step * (.58 + .42 * approach);
+      const fan = lane * spread;
+      const x = fan + Math.sin(p * 2.6 + index) * 4;
+      const y = -10 + wave * (7 + 7 * approach) + lane * lane * 2;
+      const z = -175 + approach * 142 + Math.abs(lane) * -11;
+      const rotY = lane * (-5 + approach * 1.8) + wave * 1.5;
+      const rotZ = lane * 1.55 - wave * 1.25;
+      const scale = .90 + approach * .08;
+      const alpha = clamp((p + .18) * 2.8);
 
       card.style.opacity = alpha.toFixed(3);
       card.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px),calc(-50% + ${y.toFixed(1)}px),${z.toFixed(1)}px) rotateY(${rotY.toFixed(2)}deg) rotateZ(${rotZ.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
     });
 
-    const wordScale = .86 + approach * .15 + exit * .04;
-    word.style.opacity = (.065 + approach * .14 - exit * .10).toFixed(3);
+    const wordScale = .84 + approach * .10;
+    word.style.opacity = (.055 + approach * .10).toFixed(3);
     word.style.transform = `translate(-50%,-50%) scale(${wordScale.toFixed(3)})`;
 
-    const captionIn = clamp((p - .06) / .24);
-    caption.style.opacity = captionIn.toFixed(3);
-    caption.style.transform = `translateY(${((1 - captionIn) * 16).toFixed(1)}px)`;
+    // Keep the caption present. It only glides into place; it never fades away.
+    const captionIn = clamp((p - .02) / .22);
+    caption.style.opacity = '1';
+    caption.style.transform = `translateY(${((1 - captionIn) * 14).toFixed(1)}px)`;
     stage.style.setProperty('--spatial-progress', p.toFixed(3));
   };
 
