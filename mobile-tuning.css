@@ -1,0 +1,70 @@
+/* Mobile refinement: bounded spatial cards, persistent caption, compact bridge, single-line process. */
+@media (max-width:760px){
+  html body .spatial-bridge{
+    height:auto!important;
+    min-height:600px!important;
+    margin-top:0!important;
+    padding:8px 0 24px!important;
+    overflow:hidden!important;
+    background:#090909!important;
+  }
+  html body .spatial-stage{
+    position:relative!important;
+    top:auto!important;
+    height:568px!important;
+    min-height:568px!important;
+    overflow:hidden!important;
+    perspective:900px!important;
+    perspective-origin:50% 28%!important;
+  }
+  html body .spatial-card{
+    top:25%!important;
+    width:clamp(96px,28vw,120px)!important;
+    max-width:120px!important;
+  }
+  html body .spatial-word{
+    top:25.5%!important;
+    font-size:clamp(94px,31vw,148px)!important;
+  }
+  html body .spatial-caption{
+    top:52%!important;
+    bottom:auto!important;
+    opacity:1!important;
+    transform:none;
+    max-width:min(92vw,410px)!important;
+  }
+  html body .spatial-caption strong{
+    font-size:clamp(31px,8.7vw,44px)!important;
+    line-height:.96!important;
+  }
+
+  /* Keep the five-step process on a single mobile row. */
+  html body .process{
+    width:100%!important;
+    flex-wrap:nowrap!important;
+    gap:clamp(4px,1.2vw,8px)!important;
+    align-items:center!important;
+  }
+  html body .process span{
+    flex:0 0 auto!important;
+    white-space:nowrap!important;
+    font-size:clamp(7px,2.15vw,10px)!important;
+    letter-spacing:.08em!important;
+  }
+  html body .process i{
+    flex:1 1 18px!important;
+    width:auto!important;
+    min-width:7px!important;
+    max-width:28px!important;
+  }
+}
+
+@media(max-width:390px){
+  html body .spatial-bridge{min-height:560px!important}
+  html body .spatial-stage{height:540px!important;min-height:540px!important}
+  html body .spatial-card{top:24%!important;width:94px!important}
+  html body .spatial-caption{top:51%!important}
+  html body .process{gap:3px!important}
+  html body .process span{font-size:7px!important;letter-spacing:.055em!important}
+  html body .process i{min-width:5px!important;max-width:16px!important}
+}
