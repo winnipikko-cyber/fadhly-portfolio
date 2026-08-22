@@ -20,6 +20,7 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktop = window.matchMedia('(min-width: 761px)');
   let frame = 0;
+  let lastMobileProgress = -1;
 
   const clamp = (n, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
@@ -55,42 +56,39 @@
 
   const renderMobile = (rect) => {
     const vw = Math.max(320, window.innerWidth);
-
-    // Mobile uses a compact, non-sticky scene. Progress follows the section as it
-    // enters the viewport, so there is no long empty scroll tail after the caption.
     const start = window.innerHeight * .82;
     const end = -bridge.offsetHeight * .18;
     const p = clamp((start - rect.top) / Math.max(1, start - end));
-    const approach = clamp(p / .58);
 
-    // Compute the spread from the actual viewport width. This guarantees that the
-    // outer cards stay inside the mobile viewport even at maximum approach/zoom.
+    // Skip sub-pixel progress changes. On touch scrolling this cuts redundant style
+    // writes while keeping the animation visually continuous.
+    if (lastMobileProgress >= 0 && Math.abs(p - lastMobileProgress) < .004) return;
+    lastMobileProgress = p;
+
+    const approach = clamp(p / .58);
     const cardWidth = Math.min(120, Math.max(94, vw * .28));
     const maxOuterX = Math.max(72, (vw - cardWidth - 28) / 2);
     const step = Math.min(100, maxOuterX / 2);
 
     cards.forEach((card, index) => {
       const lane = index - 2;
-      const wave = Math.sin((index + 1) * 1.23 + p * 3.2);
+      const wave = Math.sin((index + 1) * 1.23 + p * 3.0);
       const spread = step * (.58 + .42 * approach);
       const fan = lane * spread;
-      const x = fan + Math.sin(p * 2.6 + index) * 4;
-      const y = -10 + wave * (7 + 7 * approach) + lane * lane * 2;
-      const z = -175 + approach * 142 + Math.abs(lane) * -11;
-      const rotY = lane * (-5 + approach * 1.8) + wave * 1.5;
-      const rotZ = lane * 1.55 - wave * 1.25;
+      const x = fan + Math.sin(p * 2.4 + index) * 3;
+      const y = -9 + wave * (6 + 6 * approach) + lane * lane * 2;
+      const rotZ = lane * 1.35 - wave * 1.05;
       const scale = .90 + approach * .08;
       const alpha = clamp((p + .18) * 2.8);
 
       card.style.opacity = alpha.toFixed(3);
-      card.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px),calc(-50% + ${y.toFixed(1)}px),${z.toFixed(1)}px) rotateY(${rotY.toFixed(2)}deg) rotateZ(${rotZ.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      card.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px),calc(-50% + ${y.toFixed(1)}px),0) rotateZ(${rotZ.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
     });
 
     const wordScale = .84 + approach * .10;
     word.style.opacity = (.055 + approach * .10).toFixed(3);
     word.style.transform = `translate(-50%,-50%) scale(${wordScale.toFixed(3)})`;
 
-    // Keep the caption present. It only glides into place; it never fades away.
     const captionIn = clamp((p - .02) / .22);
     caption.style.opacity = '1';
     caption.style.transform = `translateY(${((1 - captionIn) * 14).toFixed(1)}px)`;
@@ -102,6 +100,8 @@
     if (reduceMotion.matches) return;
 
     const rect = bridge.getBoundingClientRect();
+    if (!desktop.matches && (rect.bottom < -80 || rect.top > window.innerHeight + 80)) return;
+
     if (desktop.matches) renderDesktop(rect);
     else renderMobile(rect);
   };
@@ -114,7 +114,10 @@
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule, { passive: true });
   addEventListener('orientationchange', schedule, { passive: true });
-  desktop.addEventListener?.('change', schedule);
+  desktop.addEventListener?.('change', () => {
+    lastMobileProgress = -1;
+    schedule();
+  });
   reduceMotion.addEventListener?.('change', schedule);
   schedule();
 })();
