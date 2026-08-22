@@ -3,9 +3,9 @@
   html body .hero{
     min-height:auto!important;
     padding-top:64px!important;
-    padding-bottom:0!important;
+    padding-bottom:28px!important;
     border-bottom:0!important;
-    overflow:hidden!important;
+    overflow:visible!important;
   }
 
   html body .hero::before{
@@ -40,7 +40,7 @@
     align-items:stretch!important;
     min-height:auto!important;
     padding-top:43svh!important;
-    padding-bottom:10px!important;
+    padding-bottom:18px!important;
     overflow:visible!important;
   }
 
@@ -92,7 +92,13 @@
     font-size:12px!important;
     line-height:1.55!important;
   }
-  html body .hero-actions{margin-top:18px!important;margin-bottom:0!important}
+  html body .hero-actions{
+    margin-top:18px!important;
+    margin-bottom:0!important;
+    padding-bottom:10px!important;
+    position:relative!important;
+    z-index:12!important;
+  }
   html body .hero-side-note,
   html body .scroll-cue,
   html body .hero-type{display:none!important}
@@ -102,7 +108,7 @@
   html body .spatial-bridge{
     height:94svh!important;
     min-height:560px!important;
-    margin-top:-16px!important;
+    margin-top:0!important;
     border-top:0!important;
     background:#090909!important;
   }
