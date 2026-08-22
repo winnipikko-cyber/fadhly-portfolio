@@ -14,13 +14,20 @@
     height:568px!important;
     min-height:568px!important;
     overflow:hidden!important;
-    perspective:900px!important;
-    perspective-origin:50% 28%!important;
+    perspective:none!important;
+    transform-style:flat!important;
+  }
+  html body .spatial-orbit,
+  html body .spatial-card{
+    transform-style:flat!important;
   }
   html body .spatial-card{
     top:25%!important;
     width:clamp(96px,28vw,120px)!important;
     max-width:120px!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    will-change:transform,opacity!important;
   }
   html body .spatial-word{
     top:25.5%!important;
@@ -56,6 +63,54 @@
     width:auto!important;
     min-width:7px!important;
     max-width:28px!important;
+  }
+
+  /* Mobile performance mode: preserve the visual language, remove costly paint work. */
+  html body .grain{
+    display:none!important;
+    animation:none!important;
+  }
+  html body .topbar{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    background:rgba(9,9,9,.96)!important;
+  }
+  html body .hero::before{
+    filter:none!important;
+    will-change:auto!important;
+  }
+  html body .hero-copy,
+  html body .hero-copy .eyebrow,
+  html body .hero-copy h1,
+  html body .hero-copy>p,
+  html body .hero-actions{
+    filter:none!important;
+  }
+  html body .motion-target{
+    filter:none!important;
+    transition:opacity .42s var(--motion-delay,0ms) ease,transform .48s var(--motion-delay,0ms) cubic-bezier(.2,.8,.2,1)!important;
+  }
+  html body .project-row h3,
+  html body .project-row p,
+  html body .project-row .project-no,
+  html body .project-row .project-arrow,
+  html body .button,
+  html body .contact-word{
+    will-change:auto!important;
+  }
+  html body .project-row.mobile-active .project-arrow{
+    animation:none!important;
+  }
+  html body .cap-item.motion-focus{
+    padding-left:0!important;
+    padding-right:0!important;
+    background:none!important;
+  }
+  html body .contact:before{
+    display:none!important;
+  }
+  html body .process:before{
+    transition:none!important;
   }
 }
 
