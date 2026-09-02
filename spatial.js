@@ -17,6 +17,8 @@
   const word = bridge.querySelector('.spatial-word');
   const caption = bridge.querySelector('.spatial-caption');
   const cards = [...bridge.querySelectorAll('.spatial-card')];
+  const cardCenter = (cards.length - 1) / 2;
+  const maxLane = Math.max(1, cardCenter);
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktop = window.matchMedia('(min-width: 761px)');
   let frame = 0;
@@ -31,7 +33,7 @@
     const exit = clamp((p - .68) / .32);
 
     cards.forEach((card, index) => {
-      const lane = index - 2;
+      const lane = index - cardCenter;
       const fan = lane * (76 + 150 * approach);
       const wave = Math.sin((index + 1) * 1.23 + p * 4.2);
       const y = wave * (36 + 35 * approach) + lane * lane * 9 - 24;
@@ -68,10 +70,10 @@
     const approach = clamp(p / .58);
     const cardWidth = Math.min(120, Math.max(94, vw * .28));
     const maxOuterX = Math.max(72, (vw - cardWidth - 28) / 2);
-    const step = Math.min(100, maxOuterX / 2);
+    const step = Math.min(92, maxOuterX / maxLane);
 
     cards.forEach((card, index) => {
-      const lane = index - 2;
+      const lane = index - cardCenter;
       const wave = Math.sin((index + 1) * 1.23 + p * 3.0);
       const spread = step * (.58 + .42 * approach);
       const fan = lane * spread;
