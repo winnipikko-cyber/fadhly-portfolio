@@ -1,0 +1,15 @@
+CIREBON ASSET PACK — GITHUB READY
+
+Target repository: winnipikko-cyber/fadhly-portfolio
+Target branch: portfolio-kage-experience
+
+Extract this archive at the repository root.
+It will create: public/cirebon-assets/...
+
+Then run:
+  git checkout portfolio-kage-experience
+  git add public/cirebon-assets
+  git commit -m "Add Cirebon spatial asset library"
+  git push origin portfolio-kage-experience
+
+The portfolio static build already copies /public to the deployed site root, so files will resolve as /cirebon-assets/<category>/<file>.webp.
