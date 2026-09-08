@@ -28,7 +28,7 @@ must(
 // Keep footer navigation portfolio-first while the environmental vocabulary stays in the world itself.
 must(
   '<div><h4>Chapters</h4><ul>\n      <li><a href="#gate" data-cursor>Siti Inggil</a></li>\n      <li><a href="#pathways" data-cursor>Mega Mendung</a></li>\n      <li><a href="#lessons" data-cursor>Pusaka & Lapisan</a></li>\n      <li><a href="#eternity" data-cursor>Pantura</a></li>\n    </ul></div>',
-  '<div><h4>Flagships</h4><ul>\n      <li><a href="#gate" data-cursor>SAMAR</a></li>\n      <li><a href="#pathways" data-cursor>ChoSSI</a></li>\n      <li><a href="#lessons" data-cursor>Diablo Match</a></li>\n      <li><a href="#eternity" data-cursor>Teman Deadline</a></li>\n    </ul></div>'
+  '<div><h4>Flagships</h4><ul>\n      <li><a href="#gate" data-cursor>SAMAR</a></li>\n      <li><a href="#pathways" data-cursor>CLOSER</a></li>\n      <li><a href="#lessons" data-cursor>Diablo Match</a></li>\n      <li><a href="#eternity" data-cursor>Teman Deadline</a></li>\n    </ul></div>'
 );
 must(
   '<div><h4>Elements</h4><ul>\n      <li><a href="#lessons" data-cursor>Bata merah</a></li>\n      <li><a href="#lessons" data-cursor>Mega Mendung</a></li>\n      <li><a href="#lessons" data-cursor>Wadasan</a></li>\n      <li><a href="#lessons" data-cursor>Singa Barong</a></li>\n    </ul></div>',
