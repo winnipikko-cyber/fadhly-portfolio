@@ -1,18 +1,581 @@
 {
   "asset_count": 72,
-  "runtime_root": "/cirebon-assets",
-  "status": "binary-assets-pending-upload",
-  "categories": {
-    "architecture": ["pendopo-roof.webp","pendopo-pillar.webp","pendopo-beam.webp","pendopo-ornament.webp","pendopo-base.webp","gapura-side.webp","gapura-back.webp","gapura-hero.webp","pendopo-night.webp"],
-    "props": ["singa-barong.webp","stone-lantern.webp","fire-brazier.webp","kendi.webp","fishing-boat.webp","wooden-cart.webp","stone-altar.webp","stone-relief.webp","full-moon.webp"],
-    "foliage": ["tropical-tree.webp","jungle-cluster.webp","vine-curtain.webp","frangipani-branch.webp","tropical-canopy.webp","tropical-outcrop.webp"],
-    "backgrounds": ["mega-mendung-cloudscape.webp","ornamental-cloudscape.webp","temple-island-silhouette.webp"],
-    "ground": ["wet-stone-floor.webp","stone-stairs.webp","stone-platform.webp","coastal-earth.webp","beach-sand.webp","coastal-rock.webp","mossy-stone-path.webp","wet-courtyard.webp","puddle-reflection.webp"],
-    "fabric": ["mega-mendung-cloth.webp","umbul-umbul.webp","banner.webp","torn-cloth.webp","decorative-cloth.webp"],
-    "fx": ["thin-fog.webp","thick-fog.webp","smoke.webp","embers.webp","fireflies.webp","rain.webp","godrays.webp"],
-    "materials": ["brick.webp","stone.webp","carved-wood.webp","roof-tile.webp","bronze.webp","earth.webp","leaves.webp","water.webp","sand.webp","batik.webp"],
-    "character/turnaround": ["front.webp","front-three-quarter.webp","side.webp","back.webp","back-three-quarter.webp"],
-    "character/detail": ["face.webp","hair.webp","fabric.webp","belt.webp","keris.webp","bracer.webp","footwear.webp"],
-    "branding": ["emblem.webp","cirebon-3d-wordmark.webp"]
-  }
+  "assets": [
+    {
+      "path": "architecture/pendopo-roof.webp",
+      "source": "weathered_javanese_pavilion_roof.png",
+      "bytes": 133744,
+      "sha256": "3b8318cb20af0d27a4cc3b97c50eacee7be28c38faf9740e447c66b5ba7851ef",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "architecture/pendopo-pillar.webp",
+      "source": "ornate_gilded_teak_temple_pillar.png",
+      "bytes": 62932,
+      "sha256": "b7b2fcd0288d9565df6f801c3f891218c3989d49055b46944e3ff5df0426372e",
+      "width": 640,
+      "height": 960
+    },
+    {
+      "path": "architecture/pendopo-beam.webp",
+      "source": "ornate_gilded_javanese_carved_beam.png",
+      "bytes": 123698,
+      "sha256": "c5cd7b4bbd3e0cc5bd3795ed22014a76de185f5de0801688fcbdd1adf20f0162",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "architecture/pendopo-ornament.webp",
+      "source": "ornate_gilded_wooden_cloud_crest.png",
+      "bytes": 122206,
+      "sha256": "785dfd439c2cb1b89798db3f35378ce1ce59cc46df118acc2d76d60b3324e124",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "architecture/pendopo-base.webp",
+      "source": "ornate_wet_stone_temple_platform.png",
+      "bytes": 116998,
+      "sha256": "ebbee893fae90dc1696855e9818cca17c9ec8e410f47026209a630519c70bc94",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "architecture/gapura-side.webp",
+      "source": "ornate_split_temple_gate_pillars.png",
+      "bytes": 98640,
+      "sha256": "70a9b1aa0ed8aa5351ae99b8ae47fd8ed6fdb83f118a1c72c6947ed1363975b2",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "architecture/gapura-back.webp",
+      "source": "weathered_balinese_split_gate.png",
+      "bytes": 122122,
+      "sha256": "2d383b88e0770217a9e9105427048756304011cb7c276bca8c08d97d0baaa58a",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "architecture/gapura-hero.webp",
+      "source": "cinematic_cirebon_split_gate_at_night.png",
+      "bytes": 140666,
+      "sha256": "26aa9b99ab67460fae764cd6c2f521770389239f11b7c6c6d3b4ed47c0077dc1",
+      "width": 768,
+      "height": 960
+    },
+    {
+      "path": "architecture/pendopo-night.webp",
+      "source": "moonlit_javanese_pavilion_cutout.png",
+      "bytes": 126838,
+      "sha256": "41a41f0b8fcf3ed39345060aa636fe6318a0c9d87e83c08306ad0523e3e4718d",
+      "width": 768,
+      "height": 960
+    },
+    {
+      "path": "props/singa-barong.webp",
+      "source": "mossy_barong_guardian_statue_cutout.png",
+      "bytes": 169210,
+      "sha256": "0df57dd114608a94ff80a1ad83a17509499dfa3e3be1fcb28bcfee51965f7606",
+      "width": 768,
+      "height": 960
+    },
+    {
+      "path": "props/stone-lantern.webp",
+      "source": "mossy_stone_lantern_with_warm_glow.png",
+      "bytes": 143142,
+      "sha256": "027bf296285cdba542ec2498f1994443323a0997bbd6fb6159a6f787813c7dc7",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "props/fire-brazier.webp",
+      "source": "ornate_bronze_guardian_fire_brazier.png",
+      "bytes": 172572,
+      "sha256": "48f21ed06bdfe8772f343a578f702d0a10b1308df7b628f0d007eb679377fcec",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "props/kendi.webp",
+      "source": "ornate_antique_bronze_kendi_ewer.png",
+      "bytes": 113510,
+      "sha256": "6e504f62998ebeb955348e0060ad0a918d0d3492df154db0430692c2db69c631",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "props/fishing-boat.webp",
+      "source": "moonlit_indonesian_fishing_boat_asset.png",
+      "bytes": 178390,
+      "sha256": "d3224d4893b32715eec24c630ceeaef54b306e96e6f899e1a4dcb498edb0b58b",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "props/wooden-cart.webp",
+      "source": "weathered_ornate_wooden_ox_cart.png",
+      "bytes": 170724,
+      "sha256": "d64d524a129d143c110e76aeacdb750785694e9d9d1605f0dc09b3658367ab2e",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "props/stone-altar.webp",
+      "source": "ornate_moss_covered_stone_altar.png",
+      "bytes": 207520,
+      "sha256": "0ba6423e3aec63722deaa6127079733a4be316ceef3e4119d6c19c177c2b463e",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "props/stone-relief.webp",
+      "source": "ornate_mossy_lotus_stone_relief.png",
+      "bytes": 234390,
+      "sha256": "f9db75b1d418e78a0e20bdc164212f059425ad5cb2f763f4bc842b9e16def876",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "props/full-moon.webp",
+      "source": "detailed_full_moon_with_halo.png",
+      "bytes": 221044,
+      "sha256": "7de4f0d466126d3fb33433861227f3fd4e20702de66ac0736df6a10d5b4e4d2b",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "foliage/tropical-tree.webp",
+      "source": "moonlit_tropical_tree_island.png",
+      "bytes": 269160,
+      "sha256": "aa31f64f8357e31916583da49a2cd7ef452565fb323b6e054b6ec4c5ca7d8e92",
+      "width": 768,
+      "height": 960
+    },
+    {
+      "path": "foliage/jungle-cluster.webp",
+      "source": "moonlit_wet_jungle_foliage_cluster.png",
+      "bytes": 139362,
+      "sha256": "513180a7f17d39bea5c021f28bf44ced69ce61b5a53cb759d7099ccbe8747410",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "foliage/vine-curtain.webp",
+      "source": "moonlit_wet_jungle_vine_curtain.png",
+      "bytes": 249416,
+      "sha256": "2ed8be44e0463479a9f7cf6ce9937cc3f1003bb3f2d33928a72d998fa352f424",
+      "width": 720,
+      "height": 960
+    },
+    {
+      "path": "foliage/frangipani-branch.webp",
+      "source": "moonlit_wet_frangipani_branch.png",
+      "bytes": 218038,
+      "sha256": "43b36909c5096fcc6ae9f4ba37210718d5a8666489392df1ca070ebcf32d0cd3",
+      "width": 720,
+      "height": 960
+    },
+    {
+      "path": "foliage/tropical-canopy.webp",
+      "source": "moonlit_wet_tropical_canopy.png",
+      "bytes": 212968,
+      "sha256": "4445b514d6080116728cf763ab60508a7c745d14a186ebc6a1137fed6f87fa3e",
+      "width": 768,
+      "height": 960
+    },
+    {
+      "path": "foliage/tropical-outcrop.webp",
+      "source": "moonlit_tropical_island_outcrop.png",
+      "bytes": 314858,
+      "sha256": "2dfa13c70a363a5d9e2e6ceabc3b73663f7bb019f66cd5b92e2debaeeb97360b",
+      "width": 768,
+      "height": 960
+    },
+    {
+      "path": "backgrounds/mega-mendung-cloudscape.webp",
+      "source": "moonlit_mega_mendung_cloudscape.png",
+      "bytes": 86052,
+      "sha256": "4ea4ce420a83a4fddd53ce5856b1237f610dd79b5cc13a43d583a0b947cdb783",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "backgrounds/ornamental-cloudscape.webp",
+      "source": "moonlit_ornamental_cloudscape.png",
+      "bytes": 64714,
+      "sha256": "a6b40dda75f02ad796809364d03e678ca340e0f9f6425d69d22b171438e1c10e",
+      "width": 960,
+      "height": 480
+    },
+    {
+      "path": "backgrounds/temple-island-silhouette.webp",
+      "source": "moonlit_temple_island_skyline.png",
+      "bytes": 58542,
+      "sha256": "af0bfc1ad55ed8205c45587fe0a63de956358ec9e0d1ce4b4bbfeb4256e001a0",
+      "width": 960,
+      "height": 320
+    },
+    {
+      "path": "ground/wet-stone-floor.webp",
+      "source": "wet_ornate_cobblestone_slab.png",
+      "bytes": 210650,
+      "sha256": "5df7e725efb8ad37575ad5234bd9f42c7c7c4290238c241b7a1d75dff465b24b",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "ground/stone-stairs.webp",
+      "source": "mossy_temple_guardian_stairway.png",
+      "bytes": 226552,
+      "sha256": "1241eec0a3bc605df320aef804bdefee298bb960c6628537b8100794042b2fe0",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "ground/stone-platform.webp",
+      "source": "weathered_mossy_stone_ritual_platform.png",
+      "bytes": 112658,
+      "sha256": "9fb2e1907589cef7ada334b8396f00f84d7e1d941621cfa37cbc2199e2936fa9",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "ground/coastal-earth.webp",
+      "source": "moonlit_coastal_mudflat_terrain_tile.png",
+      "bytes": 174176,
+      "sha256": "8f6e8fcb81abf8a8294153c04635cdaca046c3dc17ba4af0359d088394575084",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "ground/beach-sand.webp",
+      "source": "irregular_wet_beach_sand_patch.png",
+      "bytes": 227550,
+      "sha256": "c1af4cf7296055ac637896f99d74eeaa3fa96d05fb85eb3aa2ecae5d151d81b8",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "ground/coastal-rock.webp",
+      "source": "wet_coastal_rock_formation.png",
+      "bytes": 204018,
+      "sha256": "131ccd76b7ff9895c1b1f6c726ccdee07da25b6ef6a04c4e17a7ea0d03f9ae5d",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "ground/mossy-stone-path.webp",
+      "source": "moonlit_mossy_stone_path.png",
+      "bytes": 166106,
+      "sha256": "f65a9fac57c5e18736f328012f23d70809b16e82cc2fa3ff0b4e0560df2b9b7e",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "ground/wet-courtyard.webp",
+      "source": "moonlit_misty_cobblestone_courtyard.png",
+      "bytes": 85986,
+      "sha256": "81fe67c802ce9b9a47c3127a40bed58d15c318092e9df0f739b9f5362517eb4b",
+      "width": 960,
+      "height": 480
+    },
+    {
+      "path": "ground/puddle-reflection.webp",
+      "source": "moonlit_wet_puddle_reflection.png",
+      "bytes": 126782,
+      "sha256": "1ab409941a44dc5d06a9f7c800292ee0a4ec61b7132d6201ee9bd425a6505140",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "fabric/mega-mendung-cloth.webp",
+      "source": "draped_indigo_mega_mendung_cloud_textile.png",
+      "bytes": 155814,
+      "sha256": "252330bbef35651c23e3ccb1ff175133f094f74bb1a6c8051323e523391a33fe",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "fabric/umbul-umbul.webp",
+      "source": "ornate_indigo_cloud_ceremonial_banner.png",
+      "bytes": 50582,
+      "sha256": "9a5278bd59be411b5b13a40988018ccdca646f9c376ad63bc9e0a614fc1adc4c",
+      "width": 640,
+      "height": 960
+    },
+    {
+      "path": "fabric/banner.webp",
+      "source": "ornate_indigo_and_crimson_draped_banner.png",
+      "bytes": 62166,
+      "sha256": "917e3c02ee39a0aec66925ab9be4b6b42daba8a1731d70c25e84e7143daaa67c",
+      "width": 960,
+      "height": 320
+    },
+    {
+      "path": "fabric/torn-cloth.webp",
+      "source": "ancient_tattered_indigo_banner.png",
+      "bytes": 233378,
+      "sha256": "ac41a1b65ecccb79401c3753b710aeef69c4e1b2dce4813bdde40666ea8c1d47",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "fabric/decorative-cloth.webp",
+      "source": "ornate_royal_cloud_drapery_prop.png",
+      "bytes": 138204,
+      "sha256": "9644bacbba625250823da755a96f1dc1ff8ea2998f3fae9d41f20d42ad619eee",
+      "width": 640,
+      "height": 960
+    },
+    {
+      "path": "fx/thin-fog.webp",
+      "source": "moonlit_blue_gray_mist_overlay.png",
+      "bytes": 113514,
+      "sha256": "fbb2169e15f8950b54cdea818116f2b16fed37f5d7330cb2c4d3e8c7f6ae5725",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "fx/thick-fog.webp",
+      "source": "moonlit_blue_gray_fog_bank.png",
+      "bytes": 101370,
+      "sha256": "d973053c602c48503071e17c356141cc54c00cae651914b92cb1c7ce92e2fb1c",
+      "width": 960,
+      "height": 720
+    },
+    {
+      "path": "fx/smoke.webp",
+      "source": "cinematic_blue_gray_smoke_plume.png",
+      "bytes": 149544,
+      "sha256": "ae6c7128a54a3a69e501d5d6259515c89ddc8fafe376f835eb02527c2e49ef56",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "fx/embers.webp",
+      "source": "glowing_orange_ember_sparks.png",
+      "bytes": 253892,
+      "sha256": "10cd84647a56acd7b32f42412b7cb44fa99f63929c72f1921701e2c7c49e9508",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "fx/fireflies.webp",
+      "source": "glowing_firefly_particle_swarm.png",
+      "bytes": 209880,
+      "sha256": "4484d26cc0aafbb828c717a2b70d7e20450569a9d4d471358d62f2911b1bbd64",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "fx/rain.webp",
+      "source": "cinematic_wind_driven_rain_overlay.png",
+      "bytes": 323780,
+      "sha256": "5f68476606e5cc5791df360f0e397ac46425600a453bbc8978adcbf9385fa054",
+      "width": 720,
+      "height": 960
+    },
+    {
+      "path": "fx/godrays.webp",
+      "source": "cinematic_diagonal_god_rays_overlay.png",
+      "bytes": 122028,
+      "sha256": "c2c84216f85aca3bf4527decb1b875af923ec302d0fb3b8b24eb0e63fca30dd4",
+      "width": 720,
+      "height": 960
+    },
+    {
+      "path": "materials/brick.webp",
+      "source": "weathered_moss_covered_brick_wall.png",
+      "bytes": 182330,
+      "sha256": "75bbc8fefed7088419a8ff4c7519fe33cf92f3ab9f7c805b188244c4214a1e81",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/stone.webp",
+      "source": "seamless_weathered_stone_pavement_texture.png",
+      "bytes": 193432,
+      "sha256": "06554977accddf0a29ba01b9b21d7d258fe6d3aceb800d1dbecf422ad472fbc6",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/carved-wood.webp",
+      "source": "antique_ornate_woodcarved_floral_relief.png",
+      "bytes": 90724,
+      "sha256": "b220c06de7ba6e0f4e336e16678dd138875b38e12a9899342e035301b60f59eb",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/roof-tile.webp",
+      "source": "seamless_weathered_terracotta_roof_tiles.png",
+      "bytes": 144694,
+      "sha256": "e899c5f8808e989c32a024cb31e4be54512b597dc619d94d3cea9848e093894e",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/bronze.webp",
+      "source": "weathered_golden_bronze_patina_texture.png",
+      "bytes": 198856,
+      "sha256": "3785792a5a282da22e9ede1a5269d389d809e181029e3d8b5da15b39418ed5b4",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/earth.webp",
+      "source": "dark_moist_earth_texture.png",
+      "bytes": 198684,
+      "sha256": "3e998d695a09ebaef6355cdce2f4dae7358fda2c1be05d59b2b960ad66760680",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/leaves.webp",
+      "source": "seamless_tropical_leaf_carpet.png",
+      "bytes": 119660,
+      "sha256": "1f2cd26af3eb65c9454c825a5aedb574711de221a63fdb10837d51a0d714f79e",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/water.webp",
+      "source": "moonlit_dark_ocean_ripples.png",
+      "bytes": 67388,
+      "sha256": "0e56fcc500a16dc8fbc152ac07bc03cc076e8f13e6e08d2a2b6368f898dc000a",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/sand.webp",
+      "source": "seamless_warm_beach_sand_texture.png",
+      "bytes": 264796,
+      "sha256": "9c38cbf0017c0a54285e135b6bc73337e5edb565a13ea0871bba3c601e71a458",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "materials/batik.webp",
+      "source": "indigo_batik_cloudwork_pattern.png",
+      "bytes": 178728,
+      "sha256": "ec4776cce8a0ff259d0d2cbeab23b104fee7750a8a8ea6efb49cc9f1ab3246cc",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "path": "character/turnaround/front.webp",
+      "source": "batik_ronin_warrior_character_cutout.png",
+      "bytes": 84796,
+      "sha256": "8d00a2a0d9b233d459397f92d4aa7ed409369692b1182e2eae6c44c7095c9552",
+      "width": 667,
+      "height": 1000
+    },
+    {
+      "path": "character/turnaround/front-three-quarter.webp",
+      "source": "ornate_batik_warrior_character_render.png",
+      "bytes": 84222,
+      "sha256": "0fc742f5d0499fc3f8deb07283bd2f9d7f228639198cfe9ed9a3665ed7ba5bc7",
+      "width": 667,
+      "height": 1000
+    },
+    {
+      "path": "character/turnaround/side.webp",
+      "source": "profile_ronin_warrior_in_ornate_dark_robes.png",
+      "bytes": 62420,
+      "sha256": "73e6e3e49143a913af5caae074a7e93dbfa4c8d842a8c09ee0eb8f256e9fba6e",
+      "width": 667,
+      "height": 1000
+    },
+    {
+      "path": "character/turnaround/back.webp",
+      "source": "weathered_samurai_warrior_back_view.png",
+      "bytes": 94274,
+      "sha256": "0f7931e70bc363d0a9e3a9f02482ec53727b03277b8de3c62d86d31487e2a04d",
+      "width": 667,
+      "height": 1000
+    },
+    {
+      "path": "character/turnaround/back-three-quarter.webp",
+      "source": "back_view_of_an_ornate_batik_ronin_warrior.png",
+      "bytes": 98530,
+      "sha256": "dccf37d3fd09e29f6891a1a0771bd97eeee2a28f734ba00ba66b0d00ff73139f",
+      "width": 667,
+      "height": 1000
+    },
+    {
+      "path": "character/detail/face.webp",
+      "source": "warrior_portrait_triptych_with_ornate_robes.png",
+      "bytes": 115214,
+      "sha256": "07d9ff8557f51bb7ac0b0fdb6308b160e2aaed2c041bfe1e8a50e00bce2075ff",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "path": "character/detail/hair.webp",
+      "source": "warrior_man_bun_reference_composite.png",
+      "bytes": 49010,
+      "sha256": "0ad00f63e8bc6b54841240516703fe97f737a81b2aea297adad4d10d801a95c9",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "path": "character/detail/fabric.webp",
+      "source": "medieval_warrior_robe_triptych_study.png",
+      "bytes": 203662,
+      "sha256": "fc0755db3a57e40cd08c51c4cfc3f84c32fc7247011abeafe1f24770169fe65a",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "path": "character/detail/belt.webp",
+      "source": "ornate_braided_belt_triptych.png",
+      "bytes": 176558,
+      "sha256": "6f7b19a07949872eddf4f0dca691644baa6793005bc95a0fddb1ff6d4a3b1e08",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "path": "character/detail/keris.webp",
+      "source": "ornate_antique_keris_tri_view.png",
+      "bytes": 46580,
+      "sha256": "9949d17ef23859c003ded955239afdec297963ab55d9ba0e505c7e4a3a341da5",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "path": "character/detail/bracer.webp",
+      "source": "ornate_bronze_and_leather_vambrace_triptych.png",
+      "bytes": 88374,
+      "sha256": "111834e91b2f50ed30a6d7132a9e8ab48d1c4f7d9424bbe1b66e9151f029e2bc",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "path": "character/detail/footwear.webp",
+      "source": "rugged_wrapped_leather_sandals_turntable.png",
+      "bytes": 41002,
+      "sha256": "b3cf4784ab43a22b18fe9cfdc728e2bb1970133c88c31b8a51ebdb738f810faa",
+      "width": 1000,
+      "height": 1000
+    },
+    {
+      "path": "branding/emblem.webp",
+      "source": "ornate_bronze_and_teal_cloud_crest.png",
+      "bytes": 160248,
+      "sha256": "4e5a36f7e260af9da40a27f5a6b8ef91f33d5732c97a32aee3e81313d4f4b426",
+      "width": 960,
+      "height": 960
+    },
+    {
+      "path": "branding/cirebon-3d-wordmark.webp",
+      "source": "ornate_cirebon_bronze_stone_logo.png",
+      "bytes": 115760,
+      "sha256": "38117b2bf21c6cc35170b0e71dbb07f905909c5cb07511eb8c90f8fd1172a43d",
+      "width": 960,
+      "height": 720
+    }
+  ]
 }

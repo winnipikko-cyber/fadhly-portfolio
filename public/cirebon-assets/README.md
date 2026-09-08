@@ -1,5 +1,3 @@
-# Cirebon runtime assets
+# Cirebon Spatial Asset Pack
 
-Drop the prepared WebP asset folders here. The static build copies this directory to `/cirebon-assets/` on deploy.
-
-Expected subdirectories: `architecture`, `backgrounds`, `branding`, `character`, `fabric`, `foliage`, `fx`, `ground`, `materials`, `props`.
+Web-optimized assets for the Kage-inspired Cirebon portfolio experience. See `manifest.json` for source mapping, dimensions, sizes and hashes.
