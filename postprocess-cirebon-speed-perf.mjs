@@ -9,20 +9,20 @@ function must(from, to) {
   html = html.split(from).join(to);
 }
 
-// Mobile/coarse devices are the highest-risk path. Keep the authored camera/world,
-// but remove the most expensive renderer defaults there instead of waiting for
-// adaptive quality to rescue a bad first frame.
+// optimize-cirebon.mjs already establishes a fast-first baseline before this
+// pass runs. This final pass tightens the highest-risk mobile/coarse path while
+// preserving explicit query overrides for desktop review.
 must(
-  "const WANT_POST    = qs('post', '1') !== '0';",
-  "const WANT_POST    = qs('post', COARSE ? '0' : '1') !== '0';"
+  "const WANT_POST    = qs('post', '0') !== '0';",
+  "const WANT_POST    = qs('post', COARSE ? '0' : '0') !== '0';"
 );
 must(
   "const WANT_SHADOW  = qs('shadow', LOW ? '0' : '1') !== '0';",
   "const WANT_SHADOW  = qs('shadow', (COARSE || LOW) ? '0' : '1') !== '0';"
 );
 must(
-  "const DPR_CAP      = qn('dpr', LOW ? 1.4 : 1.8);",
-  "const DPR_CAP      = qn('dpr', COARSE ? 1.08 : (LOW ? 1.32 : 1.65));"
+  "const DPR_CAP      = qn('dpr', LOW ? 1.15 : 1.5);",
+  "const DPR_CAP      = qn('dpr', COARSE ? 1.08 : (LOW ? 1.15 : 1.5));"
 );
 
 // On phones, keep the strongest Cirebon silhouettes and let the WebGL world
@@ -33,9 +33,12 @@ if (!html.includes('id="faj-cirebon-speed-mobile"')) {
   html = html.replace('</head>', mobileCss + '</head>');
 }
 
-// Build-time invariant: ChoSSI remains excluded even after this final pass.
+// Build-time invariants for the current public lock.
 if (/ChoSSI|\/work\/chossi\//i.test(html)) {
   throw new Error('Cirebon speed/perf gate failed: ChoSSI reappeared in public output');
+}
+if (/>Mausu</i.test(html) || /<b>Mausu<\/b>/i.test(html)) {
+  throw new Error('Cirebon speed/perf gate failed: Mausu Bouqet was shortened');
 }
 
 await writeFile(file, html, 'utf8');
