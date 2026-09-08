@@ -1,0 +1,35 @@
+name: Check Kage Cirebon build
+
+on:
+  push:
+    branches: [portfolio-kage-experience]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Build portfolio and Cirebon experience
+        run: npm run build
+
+      - name: Verify Cirebon runtime assets
+        run: |
+          test -f dist/cirebon/index.html
+          test -f dist/cirebon-assets/architecture/gapura-hero.webp
+          test -f dist/cirebon-assets/architecture/pendopo-night.webp
+          test -f dist/cirebon-assets/props/singa-barong.webp
+          test -f dist/cirebon-assets/fx/thin-fog.webp
+          test -f dist/cirebon-assets/fabric/mega-mendung-cloth.webp
+          test -f dist/cirebon-assets/character/turnaround/front.webp
+          echo "Cirebon runtime assets verified"
