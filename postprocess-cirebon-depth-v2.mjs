@@ -33,17 +33,14 @@ const depthV2 = String.raw`${marker}
     CIREBON_WORLD.depthV2 = true;
 
     // Distant atmosphere: deliberately sparse on coarse/mobile devices.
+    // The base world already owns the photographic moon, so V2 adds only
+    // complementary sky/horizon layers to avoid translucent double exposure.
     add('backgrounds/mega-mendung-cloudscape.webp', {
       role:'sky-v2', x:-7.5, y:13.6, z:TEMPLE_Z-18,
       w:31, h:17.4, opacity:.19, depthWrite:false, fog:false, order:2
     });
 
     if (!COARSE) {
-      add('props/full-moon.webp', {
-        role:'moon-v2', x:9.7, y:14.8, z:TEMPLE_Z-20,
-        w:7.8, h:7.8, opacity:.46, depthWrite:false, fog:false, order:1
-      });
-
       add('backgrounds/temple-island-silhouette.webp', {
         role:'horizon-v2', x:-2, y:5.6, z:TEMPLE_Z-13.5,
         w:30, h:10, opacity:.24, depthWrite:false, order:3
@@ -97,13 +94,11 @@ const depthV2 = String.raw`${marker}
         w:11, h:7.8, rx:-Math.PI*.42, opacity:.25,
         depthWrite:false, additive:true, fog:false, order:10
       });
+      // Keep one extra asymmetric foreground branch; the base world already
+      // contains its own large tropical tree and jungle cluster.
       add('foliage/frangipani-branch.webp', {
         role:'fg-v2', x:-11.2, y:8.4, z:-3.6,
         w:10.8, h:14.2, ry:.12, opacity:.61, order:19
-      });
-      add('foliage/tropical-tree.webp', {
-        role:'fg-v2', x:11.8, y:7.0, z:-5.2,
-        w:11.8, h:15.8, ry:-.11, opacity:.52, order:18
       });
     }
   }
