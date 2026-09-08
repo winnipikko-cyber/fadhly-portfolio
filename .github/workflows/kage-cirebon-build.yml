@@ -72,6 +72,28 @@ jobs:
           let failed = false;
           const persist = () => writeFile('qa-artifacts/report.json', JSON.stringify(report, null, 2));
 
+          // Read the actual loader node, never an ancestor whose textContent happens
+          // to include hidden loader copy. Ancestor scanning caused false failures
+          // even while screenshots showed the experience already unlocked.
+          const loaderIsVisible = () => {
+            const pre = document.getElementById('pre');
+            if (!pre || pre.classList.contains('done')) return false;
+            const s = getComputedStyle(pre);
+            const r = pre.getBoundingClientRect();
+            return s.display !== 'none'
+              && s.visibility !== 'hidden'
+              && Number(s.opacity || 1) > .05
+              && r.width > 0
+              && r.height > 0;
+          };
+
+          const capture = async (page, path) => {
+            // SwiftShader can make a 1440p evidence capture slower than the
+            // product itself. Give evidence capture headroom without weakening
+            // runtime/loader assertions.
+            await page.screenshot({ path, fullPage: false, timeout: 60000 });
+          };
+
           let browser;
           try {
             browser = await chromium.launch({
@@ -94,19 +116,18 @@ jobs:
 
                 const response = await page.goto('http://127.0.0.1:4173/cirebon/', { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-                // The product intentionally has a 9s boot watchdog. Give normal boot a chance,
-                // then require the loader to be gone shortly after the watchdog boundary.
+                // Product watchdog is 9s. Normal boot may finish sooner; either
+                // way the real #pre node must no longer be visibly blocking.
                 await page.waitForFunction(() => {
-                  const els = [...document.querySelectorAll('*')];
-                  const visible = els.some(el => {
-                    const s = getComputedStyle(el);
-                    const t = (el.textContent || '').trim();
-                    return /MENYIAPKAN RUANG CIREBON|\b\d{1,3}%\b/i.test(t)
-                      && s.display !== 'none'
-                      && s.visibility !== 'hidden'
-                      && Number(s.opacity || 1) > .05;
-                  });
-                  return !visible;
+                  const pre = document.getElementById('pre');
+                  if (!pre || pre.classList.contains('done')) return true;
+                  const s = getComputedStyle(pre);
+                  const r = pre.getBoundingClientRect();
+                  return s.display === 'none'
+                    || s.visibility === 'hidden'
+                    || Number(s.opacity || 1) <= .05
+                    || r.width <= 0
+                    || r.height <= 0;
                 }, { timeout: 11500 }).catch(() => {});
                 await page.waitForTimeout(350);
 
@@ -114,15 +135,17 @@ jobs:
                   const text = document.body.innerText || '';
                   const root = document.documentElement;
                   const canvas = document.querySelector('canvas');
-                  const els = [...document.querySelectorAll('*')];
-                  const loaderVisible = els.some(el => {
-                    const s = getComputedStyle(el);
-                    const t = (el.textContent || '').trim();
-                    return /MENYIAPKAN RUANG CIREBON|\b\d{1,3}%\b/i.test(t)
-                      && s.display !== 'none'
+                  const pre = document.getElementById('pre');
+                  let loaderVisible = false;
+                  if (pre && !pre.classList.contains('done')) {
+                    const s = getComputedStyle(pre);
+                    const r = pre.getBoundingClientRect();
+                    loaderVisible = s.display !== 'none'
                       && s.visibility !== 'hidden'
-                      && Number(s.opacity || 1) > .05;
-                  });
+                      && Number(s.opacity || 1) > .05
+                      && r.width > 0
+                      && r.height > 0;
+                  }
                   return {
                     title: document.title,
                     hasCanvas: Boolean(canvas),
@@ -150,16 +173,16 @@ jobs:
                   runtimeClean: errors.length === 0,
                 };
 
-                await page.screenshot({ path: `qa-artifacts/${name}-first.png`, fullPage: false });
+                await capture(page, `qa-artifacts/${name}-first.png`);
 
                 // Camera-travel evidence is most useful on representative desktop + mobile.
                 if (name === 'desktop-1440' || name === 'mobile-390') {
                   await page.evaluate(() => scrollTo(0, Math.round((document.documentElement.scrollHeight - innerHeight) * .5)));
                   await page.waitForTimeout(1100);
-                  await page.screenshot({ path: `qa-artifacts/${name}-mid.png`, fullPage: false });
+                  await capture(page, `qa-artifacts/${name}-mid.png`);
                   await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
                   await page.waitForTimeout(1100);
-                  await page.screenshot({ path: `qa-artifacts/${name}-end.png`, fullPage: false });
+                  await capture(page, `qa-artifacts/${name}-end.png`);
                 }
 
                 const pass = Object.values(checks).every(Boolean);
@@ -189,7 +212,7 @@ jobs:
                 overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
                 textLength: (document.body.innerText || '').trim().length,
               }));
-              await page.screenshot({ path: 'qa-artifacts/mobile-390-reduced-motion.png', fullPage: false });
+              await capture(page, 'qa-artifacts/mobile-390-reduced-motion.png');
               const pass = state.overflowX <= 2 && state.textLength > 300 && errors.length === 0;
               if (!pass) failed = true;
               report.push({ name: 'mobile-390-reduced-motion', pass, state, errors });
