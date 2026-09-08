@@ -20,18 +20,19 @@ jobs:
         with:
           node-version: 24
 
-      - name: Wait for hosted branch preview
+      - name: Wait for exact hosted branch preview
         run: |
-          for i in {1..60}; do
-            code=$(curl -L -sS -o /tmp/cirebon-hosted.html -w '%{http_code}' "$PREVIEW_URL?qa_sha=$GITHUB_SHA" || true)
-            if [ "$code" = "200" ] && grep -q 'SAMAR' /tmp/cirebon-hosted.html; then
-              echo "Hosted preview reachable"
+          for i in {1..90}; do
+            code=$(curl -L -sS -o /tmp/cirebon-sha -w '%{http_code}' "$PREVIEW_URL/build-meta.txt?qa=$GITHUB_SHA" || true)
+            got=$(tr -d '\r\n' </tmp/cirebon-sha 2>/dev/null || true)
+            if [ "$code" = "200" ] && [ "$got" = "$GITHUB_SHA" ]; then
+              echo "Exact hosted preview ready: $got"
               exit 0
             fi
-            echo "preview not ready yet ($code); retry $i/60"
+            echo "waiting exact preview ($code, got=${got:-none}) $i/90"
             sleep 5
           done
-          echo "Hosted branch preview did not become usable"
+          echo "Exact hosted preview did not become usable"
           exit 1
 
       - name: Install Chromium browser QA runtime
@@ -45,136 +46,35 @@ jobs:
           node --input-type=module <<'NODE'
           import { chromium } from 'playwright';
           import { writeFile } from 'node:fs/promises';
-
           const base = process.env.PREVIEW_URL;
-          const viewports = [
-            ['desktop-1440', 1440, 1000],
-            ['desktop-1280', 1280, 900],
-            ['desktop-1024', 1024, 768],
-            ['tablet-834', 834, 1112],
-            ['tablet-768', 768, 1024],
-            ['mobile-430', 430, 932],
-            ['mobile-390', 390, 844],
-            ['mobile-360', 360, 800],
-          ];
-          const report = [];
-          let failed = false;
-          const save = () => writeFile('hosted-qa-artifacts/report.json', JSON.stringify(report, null, 2));
-          const browser = await chromium.launch({
-            headless: true,
-            args: ['--use-angle=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist', '--disable-dev-shm-usage'],
-          });
-
+          const sizes = [['desktop-1440',1440,1000],['desktop-1280',1280,900],['desktop-1024',1024,768],['tablet-834',834,1112],['tablet-768',768,1024],['mobile-430',430,932],['mobile-390',390,844],['mobile-360',360,800]];
+          const report=[]; let failed=false;
+          const save=()=>writeFile('hosted-qa-artifacts/report.json',JSON.stringify(report,null,2));
+          const browser=await chromium.launch({headless:true,args:['--use-angle=swiftshader','--enable-webgl','--ignore-gpu-blocklist','--disable-dev-shm-usage']});
           try {
-            for (const [name, width, height] of viewports) {
-              let context;
-              const errors = [];
+            for (const [name,width,height] of sizes) {
+              const errors=[]; const failedRequests=[]; let context;
               try {
-                context = await browser.newContext({
-                  viewport: { width, height },
-                  deviceScaleFactor: width <= 430 ? 1 : 1.25,
-                  reducedMotion: 'no-preference',
-                });
-                const page = await context.newPage();
-                page.on('console', m => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
-                page.on('pageerror', e => errors.push(`pageerror: ${e.message}`));
-                const response = await page.goto(`${base}?qa_sha=${process.env.GITHUB_SHA}`, { waitUntil: 'domcontentloaded', timeout: 45000 });
-                await page.waitForFunction(() => {
-                  const pre = document.getElementById('pre');
-                  if (!pre || pre.classList.contains('done')) return true;
-                  const s = getComputedStyle(pre);
-                  const r = pre.getBoundingClientRect();
-                  return s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity || 1) <= .05 || r.width <= 0 || r.height <= 0;
-                }, { timeout: 11500 }).catch(() => {});
+                context=await browser.newContext({viewport:{width,height},deviceScaleFactor:width<=430?1:1.25,reducedMotion:'no-preference'});
+                const page=await context.newPage();
+                page.on('console',m=>{if(m.type()==='error')errors.push(`console: ${m.text()}`)});
+                page.on('pageerror',e=>errors.push(`pageerror: ${e.message}`));
+                page.on('response',r=>{if(r.status()>=400)failedRequests.push(`${r.status()} ${r.url()}`)});
+                page.on('requestfailed',r=>failedRequests.push(`FAILED ${r.url()} :: ${r.failure()?.errorText||'unknown'}`));
+                const response=await page.goto(`${base}?qa_sha=${process.env.GITHUB_SHA}`,{waitUntil:'domcontentloaded',timeout:45000});
+                await page.waitForFunction(()=>{const p=document.getElementById('pre');if(!p||p.classList.contains('done'))return true;const s=getComputedStyle(p),r=p.getBoundingClientRect();return s.display==='none'||s.visibility==='hidden'||Number(s.opacity||1)<=.05||r.width<=0||r.height<=0},{timeout:11500}).catch(()=>{});
                 await page.waitForTimeout(400);
-
-                const state = await page.evaluate(() => {
-                  const text = document.body.innerText || '';
-                  const root = document.documentElement;
-                  const canvas = document.querySelector('canvas');
-                  const pre = document.getElementById('pre');
-                  let loaderVisible = false;
-                  if (pre && !pre.classList.contains('done')) {
-                    const s = getComputedStyle(pre);
-                    const r = pre.getBoundingClientRect();
-                    loaderVisible = s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > .05 && r.width > 0 && r.height > 0;
-                  }
-                  const sequence = ['SAMAR', 'CLOSER', 'Diablo Match', 'Teman Deadline'].map(v => text.indexOf(v));
-                  return {
-                    overflowX: root.scrollWidth - root.clientWidth,
-                    canvasSize: canvas ? [canvas.width, canvas.height] : null,
-                    loaderVisible,
-                    sequence,
-                    hasMausuBouqet: text.includes('Mausu Bouqet'),
-                    hasChoSSI: /ChoSSI|Choky Sitohang/i.test(text),
-                  };
-                });
-
-                const ordered = state.sequence.every((v, i, arr) => v >= 0 && (i === 0 || v > arr[i - 1]));
-                const checks = {
-                  httpOk: Boolean(response?.ok()),
-                  noHorizontalOverflow: state.overflowX <= 2,
-                  flagshipOrderCorrect: ordered,
-                  mausuNamingCorrect: state.hasMausuBouqet,
-                  chossiExcluded: !state.hasChoSSI,
-                  loaderReleased: !state.loaderVisible,
-                  renderedCanvas: state.canvasSize?.[0] > 0 && state.canvasSize?.[1] > 0,
-                  runtimeClean: errors.length === 0,
-                };
-
-                await page.screenshot({ path: `hosted-qa-artifacts/${name}-first.png`, fullPage: false, timeout: 60000 });
-                if (name === 'desktop-1440' || name === 'mobile-390') {
-                  await page.evaluate(() => scrollTo(0, Math.round((document.documentElement.scrollHeight - innerHeight) * .5)));
-                  await page.waitForTimeout(1100);
-                  await page.screenshot({ path: `hosted-qa-artifacts/${name}-mid.png`, fullPage: false, timeout: 60000 });
-                  await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
-                  await page.waitForTimeout(1100);
-                  await page.screenshot({ path: `hosted-qa-artifacts/${name}-end.png`, fullPage: false, timeout: 60000 });
-                }
-                const pass = Object.values(checks).every(Boolean);
-                if (!pass) failed = true;
-                report.push({ name, width, height, pass, checks, state, errors });
-                console.log(`${pass ? 'PASS' : 'FAIL'} ${name}`, checks, errors);
-              } catch (error) {
-                failed = true;
-                report.push({ name, width, height, pass: false, fatal: String(error?.stack || error), errors });
-                console.error(`FAIL ${name}`, error);
-              } finally {
-                await save();
-                await context?.close().catch(() => {});
-              }
+                const state=await page.evaluate(()=>{const text=document.body.innerText||'',root=document.documentElement,canvas=document.querySelector('canvas'),pre=document.getElementById('pre');let loaderVisible=false;if(pre&&!pre.classList.contains('done')){const s=getComputedStyle(pre),r=pre.getBoundingClientRect();loaderVisible=s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity||1)>.05&&r.width>0&&r.height>0}return{overflowX:root.scrollWidth-root.clientWidth,canvasSize:canvas?[canvas.width,canvas.height]:null,loaderVisible,sequence:['SAMAR','CLOSER','Diablo Match','Teman Deadline'].map(v=>text.indexOf(v)),hasMausuBouqet:text.includes('Mausu Bouqet'),hasChoSSI:/ChoSSI|Choky Sitohang/i.test(text)}});
+                const ordered=state.sequence.every((v,i,a)=>v>=0&&(i===0||v>a[i-1]));
+                const checks={httpOk:Boolean(response?.ok()),noHorizontalOverflow:state.overflowX<=2,flagshipOrderCorrect:ordered,mausuNamingCorrect:state.hasMausuBouqet,chossiExcluded:!state.hasChoSSI,loaderReleased:!state.loaderVisible,renderedCanvas:state.canvasSize?.[0]>0&&state.canvasSize?.[1]>0,runtimeClean:errors.length===0&&failedRequests.length===0};
+                await page.screenshot({path:`hosted-qa-artifacts/${name}-first.png`,fullPage:false,timeout:60000});
+                if(name==='desktop-1440'||name==='mobile-390'){await page.evaluate(()=>scrollTo(0,Math.round((document.documentElement.scrollHeight-innerHeight)*.5)));await page.waitForTimeout(1100);await page.screenshot({path:`hosted-qa-artifacts/${name}-mid.png`,timeout:60000});await page.evaluate(()=>scrollTo(0,document.documentElement.scrollHeight));await page.waitForTimeout(1100);await page.screenshot({path:`hosted-qa-artifacts/${name}-end.png`,timeout:60000})}
+                const pass=Object.values(checks).every(Boolean); if(!pass)failed=true; report.push({name,width,height,pass,checks,state,errors,failedRequests}); console.log(`${pass?'PASS':'FAIL'} ${name}`,checks,errors,failedRequests);
+              } catch(error){failed=true;report.push({name,width,height,pass:false,fatal:String(error?.stack||error),errors,failedRequests});console.error(`FAIL ${name}`,error)} finally {await save();await context?.close().catch(()=>{})}
             }
-
-            let reduced;
-            try {
-              reduced = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
-              const page = await reduced.newPage();
-              const errors = [];
-              page.on('console', m => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
-              page.on('pageerror', e => errors.push(`pageerror: ${e.message}`));
-              await page.goto(`${base}?qa_sha=${process.env.GITHUB_SHA}&reduced=1`, { waitUntil: 'domcontentloaded', timeout: 45000 });
-              await page.waitForTimeout(10000);
-              const state = await page.evaluate(() => ({
-                overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-                textLength: (document.body.innerText || '').trim().length,
-              }));
-              await page.screenshot({ path: 'hosted-qa-artifacts/mobile-390-reduced-motion.png', fullPage: false, timeout: 60000 });
-              const pass = state.overflowX <= 2 && state.textLength > 300 && errors.length === 0;
-              if (!pass) failed = true;
-              report.push({ name: 'mobile-390-reduced-motion', pass, state, errors });
-            } catch (error) {
-              failed = true;
-              report.push({ name: 'mobile-390-reduced-motion', pass: false, fatal: String(error?.stack || error) });
-            } finally {
-              await save();
-              await reduced?.close().catch(() => {});
-            }
-          } finally {
-            await browser.close().catch(() => {});
-            await save();
-          }
-
-          if (failed) process.exit(1);
+            let context; try {const errors=[];const failedRequests=[];context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',deviceScaleFactor:1});const page=await context.newPage();page.on('console',m=>{if(m.type()==='error')errors.push(`console: ${m.text()}`)});page.on('pageerror',e=>errors.push(`pageerror: ${e.message}`));page.on('response',r=>{if(r.status()>=400)failedRequests.push(`${r.status()} ${r.url()}`)});await page.goto(`${base}?qa_sha=${process.env.GITHUB_SHA}&reduced=1`,{waitUntil:'domcontentloaded',timeout:45000});await page.waitForTimeout(10000);const state=await page.evaluate(()=>({overflowX:document.documentElement.scrollWidth-document.documentElement.clientWidth,textLength:(document.body.innerText||'').trim().length}));await page.screenshot({path:'hosted-qa-artifacts/mobile-390-reduced-motion.png',timeout:60000});const pass=state.overflowX<=2&&state.textLength>300&&errors.length===0&&failedRequests.length===0;if(!pass)failed=true;report.push({name:'mobile-390-reduced-motion',pass,state,errors,failedRequests})}catch(error){failed=true;report.push({name:'mobile-390-reduced-motion',pass:false,fatal:String(error?.stack||error)})}finally{await save();await context?.close().catch(()=>{})}
+          } finally {await browser.close().catch(()=>{});await save()}
+          if(failed)process.exit(1);
           NODE
 
       - name: Upload hosted QA evidence
