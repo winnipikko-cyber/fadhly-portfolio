@@ -72,18 +72,6 @@ jobs:
           let failed = false;
           const persist = () => writeFile('qa-artifacts/report.json', JSON.stringify(report, null, 2));
 
-          const loaderVisible = () => {
-            const els = [...document.querySelectorAll('*')];
-            return els.some(el => {
-              const s = getComputedStyle(el);
-              const t = (el.textContent || '').trim();
-              return /MENYIAPKAN RUANG CIREBON|\b\d{1,3}%\b/i.test(t)
-                && s.display !== 'none'
-                && s.visibility !== 'hidden'
-                && Number(s.opacity || 1) > .05;
-            });
-          };
-
           let browser;
           try {
             browser = await chromium.launch({
@@ -108,13 +96,33 @@ jobs:
 
                 // The product intentionally has a 9s boot watchdog. Give normal boot a chance,
                 // then require the loader to be gone shortly after the watchdog boundary.
-                await page.waitForFunction(loaderVisible => !loaderVisible(), loaderVisible, { timeout: 11500 }).catch(() => {});
+                await page.waitForFunction(() => {
+                  const els = [...document.querySelectorAll('*')];
+                  const visible = els.some(el => {
+                    const s = getComputedStyle(el);
+                    const t = (el.textContent || '').trim();
+                    return /MENYIAPKAN RUANG CIREBON|\b\d{1,3}%\b/i.test(t)
+                      && s.display !== 'none'
+                      && s.visibility !== 'hidden'
+                      && Number(s.opacity || 1) > .05;
+                  });
+                  return !visible;
+                }, { timeout: 11500 }).catch(() => {});
                 await page.waitForTimeout(350);
 
-                const state = await page.evaluate(loaderVisible => {
+                const state = await page.evaluate(() => {
                   const text = document.body.innerText || '';
                   const root = document.documentElement;
                   const canvas = document.querySelector('canvas');
+                  const els = [...document.querySelectorAll('*')];
+                  const loaderVisible = els.some(el => {
+                    const s = getComputedStyle(el);
+                    const t = (el.textContent || '').trim();
+                    return /MENYIAPKAN RUANG CIREBON|\b\d{1,3}%\b/i.test(t)
+                      && s.display !== 'none'
+                      && s.visibility !== 'hidden'
+                      && Number(s.opacity || 1) > .05;
+                  });
                   return {
                     title: document.title,
                     hasCanvas: Boolean(canvas),
@@ -127,9 +135,9 @@ jobs:
                     hasTemanDeadline: text.includes('Teman Deadline'),
                     hasMausuBouqet: text.includes('Mausu Bouqet'),
                     hasChoSSI: /ChoSSI|Choky Sitohang/i.test(text),
-                    loaderVisible: loaderVisible(),
+                    loaderVisible,
                   };
-                }, loaderVisible);
+                });
 
                 const checks = {
                   httpOk: Boolean(response?.ok()),
