@@ -58,12 +58,15 @@ const depthV2 = String.raw`${marker}
       role:'pendopo-roof-v2', x:0, y:10.0, z:TEMPLE_Z+1.75,
       w:25.5, h:10.2, opacity:.78, order:10
     });
-    add('architecture/pendopo-beam.webp', {
-      role:'pendopo-beam-v2', x:0, y:7.35, z:TEMPLE_Z+1.35,
-      w:20.5, h:6.7, opacity:.58, order:11
-    });
 
+    // The beam is valuable as a desktop parallax seam, but on phones the base
+    // + roof silhouette carries the architecture strongly enough without a
+    // separate texture upload and transparent draw call.
     if (!COARSE) {
+      add('architecture/pendopo-beam.webp', {
+        role:'pendopo-beam-v2', x:0, y:7.35, z:TEMPLE_Z+1.35,
+        w:20.5, h:6.7, opacity:.58, order:11
+      });
       add('architecture/pendopo-pillar.webp', {
         role:'pendopo-pillar-v2', x:-6.6, y:6.0, z:TEMPLE_Z+.82,
         w:5.1, h:11.4, opacity:.68, ry:.05, order:12
@@ -110,25 +113,29 @@ const depthV2 = String.raw`${marker}
 
     // Desktop can afford the complete authored scene immediately. On phones,
     // protect the first meaningful frame from competing texture uploads: let
-    // the base Kage world render first, then hydrate Depth V2 on first scroll
-    // or when the browser has an idle slice. The timeout guarantees the scene
-    // still completes even when the visitor does not interact immediately.
+    // the base Kage world settle first, then hydrate Depth V2 on first user
+    // movement or a genuinely late idle slice. This keeps the initial viewport
+    // responsive on slower GPUs without leaving the deeper scene unavailable.
     if (!COARSE) return compose();
 
     let completed = false;
     const run = () => {
       if (completed) return;
       completed = true;
-      removeEventListener('scroll', onFirstScroll);
+      removeEventListener('scroll', onFirstMovement);
+      removeEventListener('touchstart', onFirstMovement);
+      removeEventListener('pointerdown', onFirstMovement);
       compose();
     };
-    const onFirstScroll = () => run();
-    addEventListener('scroll', onFirstScroll, { passive:true, once:true });
+    const onFirstMovement = () => run();
+    addEventListener('scroll', onFirstMovement, { passive:true, once:true });
+    addEventListener('touchstart', onFirstMovement, { passive:true, once:true });
+    addEventListener('pointerdown', onFirstMovement, { passive:true, once:true });
 
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(run, { timeout:2200 });
+      requestIdleCallback(run, { timeout:5000 });
     } else {
-      setTimeout(run, 1400);
+      setTimeout(run, 3200);
     }
   }
 
