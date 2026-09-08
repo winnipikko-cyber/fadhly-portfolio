@@ -11,6 +11,10 @@ function mustReplace(from, to) {
   html = html.split(from).join(to);
 }
 
+function optionalReplace(from, to) {
+  if (html.includes(from)) html = html.split(from).join(to);
+}
+
 // Remove the remaining visible Kage/Japanese copy from the derivative route.
 mustReplace('<div class="pre-jp jp">影の道</div>', '<div class="pre-jp">CIREBON</div>');
 mustReplace('<span>Raising the mountain temple</span>', '<span>Menyiapkan ruang Cirebon</span>');
@@ -25,7 +29,7 @@ mustReplace('<li><a href="#lessons" data-cursor>Borrowed scenery</a></li>', '<li
 mustReplace('<li><a href="#lessons" data-cursor>Lantern light</a></li>', '<li><a href="#lessons" data-cursor>Mega Mendung</a></li>');
 mustReplace('<li><a href="#lessons" data-cursor>Charred cypress</a></li>', '<li><a href="#lessons" data-cursor>Wadasan</a></li>');
 mustReplace('<li><a href="#lessons" data-cursor>Raked gravel</a></li>', '<li><a href="#lessons" data-cursor>Singa Barong</a></li>');
-mustReplace("console.error('[kage] job \\\"'", "console.error('[cirebon] job \\\"'");
+optionalReplace("console.error('[kage] job \\\"'", "console.error('[cirebon] job \\\"'");
 
 // Fast-first defaults. Full effects stay available through explicit query flags.
 mustReplace("const HI = qs('q', COARSE ? 'low' : 'high');", "const HI = qs('q', 'low');");
