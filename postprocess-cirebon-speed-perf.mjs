@@ -33,12 +33,25 @@ if (!html.includes('id="faj-cirebon-speed-mobile"')) {
   html = html.replace('</head>', mobileCss + '</head>');
 }
 
+// Kage already falls back when renderer creation throws. Add a second safety net
+// for the harder failure mode: a boot job/promise that never settles. After a
+// bounded wait, unlock the readable portfolio and hide the WebGL canvas rather
+// than leaving visitors trapped behind a 0%/partial loader forever.
+const bootWatchdog = `\n<script id="faj-cirebon-boot-watchdog">\n(() => {\n  const TIMEOUT = 9000;\n  setTimeout(() => {\n    const pre = document.getElementById('pre');\n    if (!pre || pre.classList.contains('done')) return;\n    console.warn('[cirebon] boot watchdog released a stalled loader');\n    document.documentElement.classList.add('no-webgl');\n    document.body.classList.add('no-webgl');\n    document.body.classList.remove('is-locked');\n    pre.classList.add('done');\n    const gl = document.getElementById('gl');\n    if (gl) gl.style.display = 'none';\n    document.querySelectorAll('[data-rv], .mask-line').forEach((el) => el.classList.add('rv-in'));\n  }, TIMEOUT);\n})();\n</script>\n`;
+if (!html.includes('id="faj-cirebon-boot-watchdog"')) {
+  if (!html.includes('</body>')) throw new Error('Cirebon boot-watchdog body anchor missing');
+  html = html.replace('</body>', bootWatchdog + '</body>');
+}
+
 // Build-time invariants for the current public lock.
 if (/ChoSSI|\/work\/chossi\//i.test(html)) {
   throw new Error('Cirebon speed/perf gate failed: ChoSSI reappeared in public output');
 }
 if (/>Mausu</i.test(html) || /<b>Mausu<\/b>/i.test(html)) {
   throw new Error('Cirebon speed/perf gate failed: Mausu Bouqet was shortened');
+}
+for (const token of ['faj-cirebon-boot-watchdog', 'const TIMEOUT = 9000', "document.body.classList.remove('is-locked')"]) {
+  if (!html.includes(token)) throw new Error(`Cirebon boot-watchdog gate failed: ${token}`);
 }
 
 await writeFile(file, html, 'utf8');
