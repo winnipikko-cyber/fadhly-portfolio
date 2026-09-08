@@ -1,7 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const file = path.join(process.cwd(), 'dist', 'cirebon', 'index.html');
+const root = process.cwd();
+const file = path.join(root, 'dist', 'cirebon', 'index.html');
+const fontsFile = path.join(root, 'dist', 'cirebon', 'secret-pathways-assets', 'fonts.css');
 let html = await readFile(file, 'utf8');
 
 function mustReplace(from, to) {
@@ -37,8 +39,8 @@ mustReplace("function buildWisps() {\n  if (COARSE) return;", "function buildWis
 mustReplace("['Reading the type', () => document.fonts && document.fonts.load('600 320px Wordmark')]", "['Preparing the type', () => {}]");
 
 // The authored procedural material generators were sized for a showcase demo.
-// Halving the largest canvases reduces CPU work and memory dramatically while
-// preserving enough detail for this dark, fogged portfolio derivative.
+// Reduce their CPU/memory footprint for a portfolio route where the materials
+// are mostly dark, fogged, and moving behind typography.
 mustReplace('const W = 1024, H = 1024;', 'const W = 512, H = 512;');
 mustReplace('const W = 512, H = 512;', 'const W = 320, H = 320;');
 mustReplace('const S = 512, c = cvs(S, S), x = c.getContext(\'2d\');', 'const S = 320, c = cvs(S, S), x = c.getContext(\'2d\');');
@@ -50,4 +52,13 @@ mustReplace('if (i < JOBS.length) setTimeout(step, 16); else setTimeout(start, 2
 html = html.replace('</body>', `\n<!-- Default: fast-first WebGL. Optional review flags: ?post=1&cloth=1&wisps=1&q=high&dpr=1.5 -->\n</body>`);
 
 await writeFile(file, html, 'utf8');
+
+// ThreeUI's authored font sheet intentionally uses a blocking font display for
+// the showcase. On a portfolio route that can make the loading state feel frozen.
+// Keep the exact font bytes, but let fallback text paint immediately.
+let fonts = await readFile(fontsFile, 'utf8');
+if (!fonts.includes('font-display:block')) throw new Error('Cirebon font optimization anchor missing');
+fonts = fonts.split('font-display:block').join('font-display:swap');
+await writeFile(fontsFile, fonts, 'utf8');
+
 console.log('Cirebon fast-first optimization applied.');
