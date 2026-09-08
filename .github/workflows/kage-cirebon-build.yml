@@ -33,3 +33,141 @@ jobs:
           test -f dist/cirebon-assets/fabric/mega-mendung-cloth.webp
           test -f dist/cirebon-assets/character/turnaround/front.webp
           echo "Cirebon runtime assets verified"
+
+      - name: Install Chromium browser QA runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Serve exact build
+        run: |
+          python3 -m http.server 4173 --directory dist > /tmp/cirebon-http.log 2>&1 &
+          echo $! > /tmp/cirebon-http.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/cirebon/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/cirebon-http.log
+          exit 1
+
+      - name: Rendered viewport QA
+        run: |
+          mkdir -p qa-artifacts
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          import { writeFile } from 'node:fs/promises';
+
+          const viewports = [
+            ['desktop-1440', 1440, 1000],
+            ['desktop-1280', 1280, 900],
+            ['desktop-1024', 1024, 768],
+            ['tablet-834', 834, 1112],
+            ['tablet-768', 768, 1024],
+            ['mobile-430', 430, 932],
+            ['mobile-390', 390, 844],
+            ['mobile-360', 360, 800],
+          ];
+
+          const browser = await chromium.launch({
+            headless: true,
+            args: ['--use-angle=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist'],
+          });
+          const report = [];
+          let failed = false;
+
+          for (const [name, width, height] of viewports) {
+            const context = await browser.newContext({
+              viewport: { width, height },
+              deviceScaleFactor: width <= 430 ? 1 : 1.25,
+              reducedMotion: 'no-preference',
+            });
+            const page = await context.newPage();
+            const errors = [];
+            page.on('console', msg => { if (msg.type() === 'error') errors.push(`console: ${msg.text()}`); });
+            page.on('pageerror', err => errors.push(`pageerror: ${err.message}`));
+
+            const response = await page.goto('http://127.0.0.1:4173/cirebon/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.waitForTimeout(width <= 430 ? 4500 : 3000);
+
+            const state = await page.evaluate(() => {
+              const text = document.body.innerText || '';
+              const root = document.documentElement;
+              const canvas = document.querySelector('canvas');
+              const loader = [...document.querySelectorAll('*')].find(el => {
+                const s = getComputedStyle(el);
+                const t = (el.textContent || '').trim();
+                return /loading|0%/i.test(t) && s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > .05;
+              });
+              return {
+                title: document.title,
+                hasCanvas: Boolean(canvas),
+                canvasSize: canvas ? [canvas.width, canvas.height] : null,
+                overflowX: root.scrollWidth - root.clientWidth,
+                bodyHeight: document.body.scrollHeight,
+                hasSAMAR: text.includes('SAMAR'),
+                hasCLOSER: text.includes('CLOSER'),
+                hasDiablo: text.includes('Diablo Match'),
+                hasTemanDeadline: text.includes('Teman Deadline'),
+                hasMausuBouqet: text.includes('Mausu Bouqet'),
+                hasChoSSI: /ChoSSI|Choky Sitohang/i.test(text),
+                loaderVisible: Boolean(loader),
+              };
+            });
+
+            const checks = {
+              httpOk: Boolean(response?.ok()),
+              noHorizontalOverflow: state.overflowX <= 2,
+              portfolioSequencePresent: state.hasSAMAR && state.hasCLOSER && state.hasDiablo && state.hasTemanDeadline,
+              mausuNamingCorrect: state.hasMausuBouqet,
+              chossiExcluded: !state.hasChoSSI,
+              loaderReleased: !state.loaderVisible,
+              renderedCanvas: state.hasCanvas && state.canvasSize?.[0] > 0 && state.canvasSize?.[1] > 0,
+              runtimeClean: errors.length === 0,
+            };
+
+            await page.screenshot({ path: `qa-artifacts/${name}-first.png`, fullPage: false });
+            await page.evaluate(() => scrollTo(0, Math.round((document.documentElement.scrollHeight - innerHeight) * .5)));
+            await page.waitForTimeout(900);
+            await page.screenshot({ path: `qa-artifacts/${name}-mid.png`, fullPage: false });
+            await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+            await page.waitForTimeout(900);
+            await page.screenshot({ path: `qa-artifacts/${name}-end.png`, fullPage: false });
+
+            const pass = Object.values(checks).every(Boolean);
+            if (!pass) failed = true;
+            report.push({ name, width, height, pass, checks, state, errors });
+            console.log(`${pass ? 'PASS' : 'FAIL'} ${name}`, checks, errors);
+            await context.close();
+          }
+
+          // Reduced-motion must remain readable and must not strand the loader.
+          const reduced = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
+          const reducedPage = await reduced.newPage();
+          const reducedErrors = [];
+          reducedPage.on('console', msg => { if (msg.type() === 'error') reducedErrors.push(`console: ${msg.text()}`); });
+          reducedPage.on('pageerror', err => reducedErrors.push(`pageerror: ${err.message}`));
+          await reducedPage.goto('http://127.0.0.1:4173/cirebon/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+          await reducedPage.waitForTimeout(3500);
+          const reducedState = await reducedPage.evaluate(() => ({
+            overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+            textLength: (document.body.innerText || '').trim().length,
+          }));
+          await reducedPage.screenshot({ path: 'qa-artifacts/mobile-390-reduced-motion.png', fullPage: false });
+          const reducedPass = reducedState.overflowX <= 2 && reducedState.textLength > 300 && reducedErrors.length === 0;
+          report.push({ name: 'mobile-390-reduced-motion', pass: reducedPass, state: reducedState, errors: reducedErrors });
+          if (!reducedPass) failed = true;
+          await reduced.close();
+
+          await browser.close();
+          await writeFile('qa-artifacts/report.json', JSON.stringify(report, null, 2));
+          if (failed) process.exit(1);
+          NODE
+
+      - name: Upload rendered QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kage-cirebon-rendered-qa
+          path: qa-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
