@@ -13,6 +13,7 @@ const depthV2 = String.raw`${marker}
 (() => {
   const MAX_WAIT = 12000;
   const started = performance.now();
+  let composeQueued = false;
 
   function ready() {
     return typeof THREE !== 'undefined' &&
@@ -103,8 +104,36 @@ const depthV2 = String.raw`${marker}
     }
   }
 
+  function scheduleCompose() {
+    if (composeQueued || CIREBON_WORLD.depthV2) return;
+    composeQueued = true;
+
+    // Desktop can afford the complete authored scene immediately. On phones,
+    // protect the first meaningful frame from competing texture uploads: let
+    // the base Kage world render first, then hydrate Depth V2 on first scroll
+    // or when the browser has an idle slice. The timeout guarantees the scene
+    // still completes even when the visitor does not interact immediately.
+    if (!COARSE) return compose();
+
+    let completed = false;
+    const run = () => {
+      if (completed) return;
+      completed = true;
+      removeEventListener('scroll', onFirstScroll);
+      compose();
+    };
+    const onFirstScroll = () => run();
+    addEventListener('scroll', onFirstScroll, { passive:true, once:true });
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(run, { timeout:2200 });
+    } else {
+      setTimeout(run, 1400);
+    }
+  }
+
   function tick() {
-    if (ready()) return compose();
+    if (ready()) return scheduleCompose();
     if (performance.now() - started < MAX_WAIT) requestAnimationFrame(tick);
   }
   tick();
