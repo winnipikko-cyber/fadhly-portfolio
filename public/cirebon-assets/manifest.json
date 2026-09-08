@@ -1,0 +1,18 @@
+{
+  "asset_count": 72,
+  "runtime_root": "/cirebon-assets",
+  "status": "binary-assets-pending-upload",
+  "categories": {
+    "architecture": ["pendopo-roof.webp","pendopo-pillar.webp","pendopo-beam.webp","pendopo-ornament.webp","pendopo-base.webp","gapura-side.webp","gapura-back.webp","gapura-hero.webp","pendopo-night.webp"],
+    "props": ["singa-barong.webp","stone-lantern.webp","fire-brazier.webp","kendi.webp","fishing-boat.webp","wooden-cart.webp","stone-altar.webp","stone-relief.webp","full-moon.webp"],
+    "foliage": ["tropical-tree.webp","jungle-cluster.webp","vine-curtain.webp","frangipani-branch.webp","tropical-canopy.webp","tropical-outcrop.webp"],
+    "backgrounds": ["mega-mendung-cloudscape.webp","ornamental-cloudscape.webp","temple-island-silhouette.webp"],
+    "ground": ["wet-stone-floor.webp","stone-stairs.webp","stone-platform.webp","coastal-earth.webp","beach-sand.webp","coastal-rock.webp","mossy-stone-path.webp","wet-courtyard.webp","puddle-reflection.webp"],
+    "fabric": ["mega-mendung-cloth.webp","umbul-umbul.webp","banner.webp","torn-cloth.webp","decorative-cloth.webp"],
+    "fx": ["thin-fog.webp","thick-fog.webp","smoke.webp","embers.webp","fireflies.webp","rain.webp","godrays.webp"],
+    "materials": ["brick.webp","stone.webp","carved-wood.webp","roof-tile.webp","bronze.webp","earth.webp","leaves.webp","water.webp","sand.webp","batik.webp"],
+    "character/turnaround": ["front.webp","front-three-quarter.webp","side.webp","back.webp","back-three-quarter.webp"],
+    "character/detail": ["face.webp","hair.webp","fabric.webp","belt.webp","keris.webp","bracer.webp","footwear.webp"],
+    "branding": ["emblem.webp","cirebon-3d-wordmark.webp"]
+  }
+}
