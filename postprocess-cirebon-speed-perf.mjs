@@ -22,12 +22,12 @@ must(
 );
 must(
   "const DPR_CAP      = qn('dpr', LOW ? 1.15 : 1.5);",
-  "const DPR_CAP      = qn('dpr', COARSE ? 1.08 : (LOW ? 1.15 : 1.5));"
+  "const DPR_CAP      = qn('dpr', COARSE ? 1.32 : (LOW ? 1.2 : 1.5));"
 );
 
 // On phones, keep the strongest Cirebon silhouettes and let the WebGL world
 // provide depth; trim decorative fixed-overlay work that competes for fill-rate.
-const mobileCss = `\n<style id="faj-cirebon-speed-mobile">\n@media (hover:none), (max-width:820px){\n  #mega-mendung{opacity:.09!important;filter:none!important}\n  .glow{animation:none!important}\n}\n@media (prefers-reduced-motion:reduce){\n  #mega-mendung{display:none!important}\n  .glow{animation:none!important}\n}\n</style>\n`;
+const mobileCss = `\n<style id="faj-cirebon-speed-mobile">\n@media (hover:none), (max-width:820px){\n  #mega-mendung{opacity:.14!important;filter:none!important}\n  .glow{animation:none!important}\n}\n@media (prefers-reduced-motion:reduce){\n  #mega-mendung{display:none!important}\n  .glow{animation:none!important}\n}\n</style>\n`;
 if (!html.includes('id="faj-cirebon-speed-mobile"')) {
   if (!html.includes('</head>')) throw new Error('Cirebon speed/perf head anchor missing');
   html = html.replace('</head>', mobileCss + '</head>');
@@ -50,7 +50,7 @@ if (/ChoSSI|\/work\/chossi\//i.test(html)) {
 if (/>Mausu</i.test(html) || /<b>Mausu<\/b>/i.test(html)) {
   throw new Error('Cirebon speed/perf gate failed: Mausu Bouqet was shortened');
 }
-for (const token of ['faj-cirebon-boot-watchdog', 'const TIMEOUT = 9000', "document.body.classList.remove('is-locked')"]) {
+for (const token of ['faj-cirebon-boot-watchdog', 'const TIMEOUT = 9000', "document.body.classList.remove('is-locked')", "COARSE ? 1.32"]) {
   if (!html.includes(token)) throw new Error(`Cirebon boot-watchdog gate failed: ${token}`);
 }
 
