@@ -37,65 +37,73 @@ const block = String.raw`${marker}
     if (CIREBON_WORLD.kageAtmosphere) return;
     CIREBON_WORLD.kageAtmosphere = true;
 
-    // Make Cirebon identity undeniable in the world itself, not just in UI copy.
+    // Cirebon identity is intentionally brought into the approach plane so it
+    // cannot disappear behind the pendopo silhouette or the distance fog.
     plane('branding/cirebon-3d-wordmark.webp', {
-      role:'cirebon-wordmark-3d', x:0, y:8.4, z:TEMPLE_Z-7.4,
-      w:13.8, h:5.2, opacity:COARSE?.58:.72, depthWrite:false, fog:true, order:15
+      role:'cirebon-wordmark-3d', x:-1.8, y:10.9, z:-7.05,
+      w:11.6, h:4.35, opacity:COARSE?.82:.90, depthWrite:false, fog:false, order:31
     });
     plane('branding/emblem.webp', {
-      role:'cirebon-emblem-3d', x:7.4, y:10.6, z:TEMPLE_Z-8.2,
-      w:3.8, h:3.8, opacity:COARSE?.34:.48, depthWrite:false, fog:true, order:14
+      role:'cirebon-emblem-3d', x:5.35, y:10.1, z:-6.92,
+      w:3.7, h:3.7, opacity:COARSE?.72:.80, depthWrite:false, fog:false, order:32
     });
 
-    // Fabric layers are spatial set dressing: banner at gate, Mega Mendung cloth deeper in court.
+    // Fabric layers frame the approach and make Mega Mendung part of the set,
+    // not a faint decorative overlay.
     plane('fabric/banner.webp', {
       role:'banner-kage', x:8.5, y:9.2, z:-7.8,
-      w:5.4, h:12.2, ry:-.12, sway:COARSE?0:.026, opacity:.76, order:22
+      w:5.4, h:12.2, ry:-.12, sway:COARSE?0:.026, opacity:COARSE?.82:.88, order:22
     });
     plane('fabric/mega-mendung-cloth.webp', {
       role:'mega-cloth-kage', x:-8.6, y:8.7, z:-19.2,
-      w:9.3, h:12.6, ry:.08, sway:COARSE?0:.034, opacity:COARSE?.60:.72, order:13
+      w:9.3, h:12.6, ry:.08, sway:COARSE?0:.034, opacity:COARSE?.72:.80, order:13
     });
     if (!COARSE) {
       plane('fabric/umbul-umbul.webp', {
         role:'umbul-kage', x:10.8, y:9.8, z:-16.4,
-        w:4.2, h:11.8, ry:-.15, sway:.04, opacity:.62, order:16
+        w:4.2, h:11.8, ry:-.15, sway:.04, opacity:.68, order:16
       });
       plane('fabric/torn-cloth.webp', {
         role:'torn-cloth-kage', x:-10.9, y:10.5, z:-7.4,
-        w:6.5, h:13.5, ry:.16, sway:.03, opacity:.38, order:21
+        w:6.5, h:13.5, ry:.16, sway:.03, opacity:.44, order:21
       });
     }
 
-    // Near-camera atmospheric sheets. They travel with the camera, so rain/fog
-    // stay perceptible through the whole Kage passage instead of disappearing after one chapter.
+    // Two rain sheets at different depths make rainfall read as motion instead
+    // of a barely-visible texture. They are additive and stay with the camera.
     const fog = cameraPlane('fx/thin-fog.webp', {
-      role:'camera-fog', x:0,y:0,z:0,w:12,h:7,opacity:COARSE?.12:.16,
+      role:'camera-fog', x:0,y:0,z:0,w:12.8,h:7.6,opacity:COARSE?.18:.23,
       depthWrite:false,fog:false,order:90
-    }, {x:0,y:-.15,z:-5.4});
+    }, {x:0,y:-.18,z:-5.5});
 
-    const rain = cameraPlane('fx/rain.webp', {
-      role:'camera-rain', x:0,y:0,z:0,w:12,h:7,opacity:COARSE?.11:.16,
-      depthWrite:false,fog:false,order:92
-    }, {x:0,y:0,z:-4.9,rz:-.015});
+    const rainNear = cameraPlane('fx/rain.webp', {
+      role:'camera-rain-near', x:0,y:0,z:0,w:12.6,h:7.4,opacity:COARSE?.28:.34,
+      depthWrite:false,fog:false,additive:true,order:96
+    }, {x:.05,y:.02,z:-4.35,rz:-.02});
 
-    let fireflies = null;
-    let embers = null;
+    const rainFar = cameraPlane('fx/rain.webp', {
+      role:'camera-rain-far', x:0,y:0,z:0,w:13.4,h:7.9,opacity:COARSE?.18:.22,
+      depthWrite:false,fog:false,additive:true,order:95
+    }, {x:-.18,y:.18,z:-5.25,rz:.018});
+
+    // Keep a light particle family even on phones; desktop gets the richer mix.
+    const fireflies = cameraPlane('fx/fireflies.webp', {
+      role:'camera-fireflies',x:0,y:0,z:0,w:11.2,h:6.4,opacity:COARSE?.07:.14,
+      depthWrite:false,fog:false,additive:true,order:94
+    }, {x:.25,y:.05,z:-4.65});
+
+    const embers = cameraPlane('fx/embers.webp', {
+      role:'camera-embers',x:0,y:0,z:0,w:10.8,h:6.1,opacity:COARSE?.04:.085,
+      depthWrite:false,fog:false,additive:true,order:93
+    }, {x:-.2,y:-.25,z:-4.72});
+
     if (!COARSE) {
-      fireflies = cameraPlane('fx/fireflies.webp', {
-        role:'camera-fireflies',x:0,y:0,z:0,w:11.2,h:6.4,opacity:.13,
-        depthWrite:false,fog:false,additive:true,order:94
-      }, {x:.25,y:.05,z:-4.65});
-      embers = cameraPlane('fx/embers.webp', {
-        role:'camera-embers',x:0,y:0,z:0,w:10.8,h:6.1,opacity:.075,
-        depthWrite:false,fog:false,additive:true,order:93
-      }, {x:-.2,y:-.25,z:-4.72});
       plane('fx/smoke.webp', {
-        role:'smoke-kage',x:5.8,y:3.4,z:-13.8,w:9.5,h:7.4,opacity:.14,
+        role:'smoke-kage',x:5.8,y:3.4,z:-13.8,w:9.5,h:7.4,opacity:.16,
         depthWrite:false,fog:false,order:23
       });
       plane('fx/godrays.webp', {
-        role:'godrays-kage',x:-2.2,y:10.6,z:TEMPLE_Z-4.5,w:18,h:14,opacity:.11,
+        role:'godrays-kage',x:-2.2,y:10.6,z:TEMPLE_Z-4.5,w:18,h:14,opacity:.13,
         depthWrite:false,fog:false,additive:true,order:17
       });
     }
@@ -104,15 +112,19 @@ const block = String.raw`${marker}
     const t0 = performance.now();
     function animate(now) {
       const t = (now - t0) * .001;
-      fog.position.x = Math.sin(t*.16)*.22;
-      fog.position.y = -.15 + Math.sin(t*.11)*.07;
-      rain.position.x = Math.sin(t*.31)*.08;
-      rain.position.y = -((t*.36)%1)*.18 + .08;
-      if (fireflies) {
-        fireflies.position.x = .25 + Math.sin(t*.24)*.17;
-        fireflies.position.y = .05 + Math.cos(t*.19)*.12;
-      }
-      if (embers) embers.position.y = -.25 + ((t*.06)%1)*.22;
+      fog.position.x = Math.sin(t*.16)*.24;
+      fog.position.y = -.18 + Math.sin(t*.11)*.08;
+
+      // Different fall rates prevent the rain texture from looking like one
+      // card sliding down the screen.
+      rainNear.position.x = .05 + Math.sin(t*.43)*.09;
+      rainNear.position.y = .02 - ((t*.72)%1)*.46;
+      rainFar.position.x = -.18 + Math.sin(t*.27)*.06;
+      rainFar.position.y = .18 - ((t*.43)%1)*.32;
+
+      fireflies.position.x = .25 + Math.sin(t*.24)*.17;
+      fireflies.position.y = .05 + Math.cos(t*.19)*.12;
+      embers.position.y = -.25 + ((t*.08)%1)*.26;
       requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
@@ -130,8 +142,9 @@ if (!html.includes('</body>')) throw new Error('Cirebon atmosphere body anchor m
 html = html.replace('</body>', block + '\n</body>');
 
 for (const token of [
-  'branding/cirebon-3d-wordmark.webp', 'fabric/banner.webp', 'fabric/mega-mendung-cloth.webp',
-  'fx/rain.webp', 'fx/thin-fog.webp', 'fx/fireflies.webp', 'fx/embers.webp'
+  'branding/cirebon-3d-wordmark.webp', 'branding/emblem.webp', 'fabric/banner.webp',
+  'fabric/mega-mendung-cloth.webp', 'fx/rain.webp', 'fx/thin-fog.webp',
+  'fx/fireflies.webp', 'fx/embers.webp'
 ]) {
   if (!html.includes(token)) throw new Error(`Cirebon atmosphere gate failed: ${token}`);
 }
