@@ -18,11 +18,8 @@ const block = String.raw`${marker}
   }
   #faj-kage-rain-near{background-image:url('/cirebon-assets/fx/rain.webp');opacity:.34;animation:fajRainNear .72s linear infinite}
   #faj-kage-rain-far{background-image:url('/cirebon-assets/fx/rain.webp');opacity:.18;background-size:1040px auto;filter:blur(.35px);animation:fajRainFar 1.18s linear infinite}
-
-  /* Case-study fabrics: hidden in the architectural hero, then revealed by scroll choreography. */
   #faj-kage-mega{z-index:18;left:-10vw;top:18vh;width:min(48vw,680px);opacity:0;transform:translate3d(-8%,0,0) rotate(-3deg);filter:saturate(1.04) contrast(1.04);will-change:opacity,transform}
   #faj-kage-torn{z-index:38;right:-5vw;top:10vh;width:min(26vw,360px);opacity:0;transform:translate3d(14%,0,0) rotate(1deg);transform-origin:88% 4%;filter:drop-shadow(0 20px 40px rgba(0,0,0,.34));will-change:opacity,transform}
-
   @keyframes fajRainNear{from{background-position:0 -420px}to{background-position:-36px 420px}}
   @keyframes fajRainFar{from{background-position:120px -520px}to{background-position:40px 520px}}
   @media(max-width:820px){
@@ -73,7 +70,6 @@ const block = String.raw`${marker}
     if (CIREBON_WORLD.kageAtmosphere) return;
     CIREBON_WORLD.kageAtmosphere = true;
 
-    /* Keep the hero architectural: gapura + pendopo remain dominant. Branding sits inside that world. */
     plane('branding/cirebon-3d-wordmark.webp', {
       role:'cirebon-wordmark-3d', x:-2.0, y:10.1, z:-9.05,
       w:9.4, h:3.5, opacity:COARSE?.56:.66, depthWrite:false, fog:true, order:18
@@ -87,12 +83,10 @@ const block = String.raw`${marker}
       role:'camera-fog',x:0,y:0,z:0,w:12.8,h:7.6,opacity:COARSE?.10:.15,
       depthWrite:false,fog:false,order:90
     }, {x:0,y:-.18,z:-5.5});
-
     const fireflies = cameraPlane('fx/fireflies.webp', {
       role:'camera-fireflies',x:0,y:0,z:0,w:11.2,h:6.4,opacity:COARSE?.035:.08,
       depthWrite:false,fog:false,additive:true,order:94
     }, {x:.25,y:.05,z:-4.65});
-
     const embers = cameraPlane('fx/embers.webp', {
       role:'camera-embers',x:0,y:0,z:0,w:10.8,h:6.1,opacity:COARSE?.02:.05,
       depthWrite:false,fog:false,additive:true,order:93
@@ -107,16 +101,12 @@ const block = String.raw`${marker}
     function animate(now) {
       const t = (now - t0) * .001;
       const p = (typeof RIG !== 'undefined' && Number.isFinite(RIG.smooth)) ? clamp(RIG.smooth/4) : 0;
-
-      /* Mega Mendung belongs to the middle case-study passage, not the intro. */
       const megaA = pulse(p,.24,.34,.56,.68);
       mega.style.opacity = String((COARSE?.48:.56) * megaA);
-      mega.style.transform = `translate3d(${(-8 + megaA*8).toFixed(2)}%,${(Math.sin(t*.18)*1.2).toFixed(2)}%,0) rotate(-3deg)`;
-
-      /* Torn cloth arrives later as a framing transition for the next case-study zone. */
+      mega.style.transform = 'translate3d(' + (-8 + megaA*8).toFixed(2) + '%,' + (Math.sin(t*.18)*1.2).toFixed(2) + '%,0) rotate(-3deg)';
       const tornA = pulse(p,.48,.58,.78,.90);
       torn.style.opacity = String((COARSE?.44:.56) * tornA);
-      torn.style.transform = `translate3d(${(14 - tornA*14).toFixed(2)}%,${(Math.sin(t*.21)*.9).toFixed(2)}%,0) rotate(${(1 + Math.sin(t*.16)*1.2).toFixed(2)}deg)`;
+      torn.style.transform = 'translate3d(' + (14 - tornA*14).toFixed(2) + '%,' + (Math.sin(t*.21)*.9).toFixed(2) + '%,0) rotate(' + (1 + Math.sin(t*.16)*1.2).toFixed(2) + 'deg)';
 
       if (!reduced) {
         fog.position.x = Math.sin(t*.16)*.18;
