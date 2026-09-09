@@ -9,11 +9,11 @@ function must(from, to, label) {
   html = html.replace(from, to);
 }
 
-// Coarse/touch devices do not benefit enough from high anisotropic sampling to
-// justify the GPU cost across every transparent scene plane.
+// Keep a little anisotropic filtering on phones so oblique floors/cloth stay
+// crisp enough to read, while still avoiding the desktop 8x texture cost.
 must(
   "tex.anisotropy = renderer && renderer.capabilities ? Math.min(8, renderer.capabilities.getMaxAnisotropy()) : 1;",
-  "tex.anisotropy = COARSE ? 1 : (renderer && renderer.capabilities ? Math.min(8, renderer.capabilities.getMaxAnisotropy()) : 1);",
+  "tex.anisotropy = COARSE ? (renderer && renderer.capabilities ? Math.min(2, renderer.capabilities.getMaxAnisotropy()) : 1) : (renderer && renderer.capabilities ? Math.min(8, renderer.capabilities.getMaxAnisotropy()) : 1);",
   'anisotropy'
 );
 
@@ -38,12 +38,12 @@ must(
 // the camera provides the motion and a simple plane is much cheaper to shade.
 must(
   "ciPlane('fabric/mega-mendung-cloth.webp',{role:'cloth',x:-10.5,y:9.5,z:-21,w:10.8,h:13.5,sway:.045,opacity:.44,order:7});",
-  "ciPlane('fabric/mega-mendung-cloth.webp',{role:'cloth',x:-10.5,y:9.5,z:-21,w:10.8,h:13.5,sway:COARSE?0:.045,opacity:.44,order:7});",
+  "ciPlane('fabric/mega-mendung-cloth.webp',{role:'cloth',x:-10.5,y:9.5,z:-21,w:10.8,h:13.5,sway:COARSE?0:.045,opacity:.56,order:7});",
   'cloth sway'
 );
 
 // Build guard: mobile budget must remain explicit in generated output.
-for (const token of ['tex.anisotropy = COARSE ? 1', "if(!COARSE)ciPlane('props/singa-barong.webp'", "if(!COARSE)ciPlane('foliage/jungle-cluster.webp'", 'sway:COARSE?0:.045']) {
+for (const token of ['Math.min(2, renderer.capabilities.getMaxAnisotropy())', "if(!COARSE)ciPlane('props/singa-barong.webp'", "if(!COARSE)ciPlane('foliage/jungle-cluster.webp'", 'sway:COARSE?0:.045,opacity:.56']) {
   if (!html.includes(token)) throw new Error(`Cirebon mobile-budget gate failed: ${token}`);
 }
 
