@@ -13,6 +13,7 @@ const excluded = new Set([
   'package-lock.json',
   'vercel.json',
   'build-static.mjs',
+  'build-cirebon.mjs',
   '.vercel-redeploy',
   'README.md'
 ]);
