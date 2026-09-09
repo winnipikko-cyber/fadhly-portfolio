@@ -10,6 +10,42 @@
   mobileTuning.href = './mobile-tuning.css';
   document.head.appendChild(mobileTuning);
 
+  // Keep the experimental spatial build out of the flagship hierarchy while still
+  // making it discoverable as a deliberate craft / cultural interface study.
+  const specialBuild = document.querySelector('.special-build');
+  if (specialBuild && !specialBuild.querySelector('[data-cirebon-entry]')) {
+    const count = specialBuild.querySelector('.section-count');
+    if (count) count.textContent = '08–09 / special builds';
+
+    const title = specialBuild.querySelector('#special-title');
+    if (title) title.textContent = 'Research, culture, and interaction — rebuilt as interfaces.';
+
+    const card = document.createElement('a');
+    card.className = 'special-card special-card-cirebon reveal rv-in';
+    card.href = './cirebon/';
+    card.dataset.cirebonEntry = 'true';
+    card.setAttribute('aria-label', 'Enter Cirebon — Court, Coast & Cloud immersive experience');
+    card.innerHTML = `
+      <div class="special-card-index">09</div>
+      <div class="special-card-copy">
+        <p class="eyebrow">Immersive cultural interface · Three.js</p>
+        <h3>CIREBON — Court, Coast & Cloud</h3>
+        <p>A spatial night passage through Kasepuhan-inspired courts, red-brick thresholds, Mega Mendung, Wadasan, royal heritage, and the layered identity of a coastal city.</p>
+        <div class="now-tags"><span>Three.js</span><span>Spatial storytelling</span><span>Cultural study</span><span>Adaptive quality</span></div>
+      </div>
+      <span class="special-card-arrow">↗</span>`;
+    specialBuild.appendChild(card);
+
+    const style = document.createElement('style');
+    style.textContent = `
+      .special-card-cirebon{margin-top:16px;background:radial-gradient(circle at 76% 18%,rgba(61,113,153,.22),transparent 34%),radial-gradient(circle at 18% 84%,rgba(141,52,37,.25),transparent 32%),linear-gradient(135deg,#101722,#090b0f)}
+      .special-card-cirebon:before{content:"CIREBON";color:rgba(126,174,205,.035)}
+      .special-card-cirebon .eyebrow{color:#a76d5c}
+      .special-card-cirebon .now-tags span{border-color:rgba(126,174,205,.18)}
+    `;
+    document.head.appendChild(style);
+  }
+
   const bridge = document.getElementById('spatial-bridge');
   if (!bridge) return;
 
