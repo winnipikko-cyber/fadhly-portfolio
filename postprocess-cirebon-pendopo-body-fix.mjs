@@ -43,41 +43,52 @@ const block = String.raw`${marker}
     const g=new THREE.Group();
     g.name='FAJ_Pendopo_Body_V4';
 
-    const timber=new THREE.MeshStandardMaterial({color:0x3b261d,roughness:.86,metalness:.015});
-    const timberDark=new THREE.MeshStandardMaterial({color:0x241916,roughness:.92,metalness:.01});
-    const stone=new THREE.MeshStandardMaterial({color:0x4d4640,roughness:.95,metalness:0});
-    const warmWood=new THREE.MeshStandardMaterial({color:0x5b3826,roughness:.82,metalness:.01});
+    const timber=new THREE.MeshStandardMaterial({color:0x56382a,roughness:.84,metalness:.012});
+    const timberDark=new THREE.MeshStandardMaterial({color:0x2d1d18,roughness:.91,metalness:.01});
+    const stone=new THREE.MeshStandardMaterial({color:0x5b5149,roughness:.94,metalness:0});
+    const warmWood=new THREE.MeshStandardMaterial({color:0x754832,roughness:.80,metalness:.01});
+    const lattice=new THREE.MeshStandardMaterial({color:0x39231b,roughness:.88,metalness:.01});
 
-    const deck=new THREE.Mesh(new THREE.BoxGeometry(mobile?14.5:17.5,.58,mobile?6.6:8.2),stone);
-    deck.position.set(0,.32,-35.5);deck.receiveShadow=true;g.add(deck);
+    const deck=new THREE.Mesh(new THREE.BoxGeometry(mobile?15.2:18.4,.66,mobile?7.4:9.0),stone);
+    deck.position.set(0,.36,-35.8);deck.receiveShadow=true;g.add(deck);
 
     const xs=mobile?[-4.8,-1.6,1.6,4.8]:[-6.3,-2.1,2.1,6.3];
-    const zs=mobile?[-33.8,-37.0]:[-33.5,-37.5];
+    const zs=mobile?[-33.9,-37.7]:[-33.6,-38.0];
     xs.forEach((x,i)=>zs.forEach((z,j)=>{
-      const col=new THREE.Mesh(new THREE.CylinderGeometry(.19,.23,5.7,12),i%2?timber:warmWood);
-      col.position.set(x,3.15,z);col.castShadow=!mobile;g.add(col);
-      const foot=new THREE.Mesh(new THREE.CylinderGeometry(.34,.39,.24,12),stone);
-      foot.position.set(x,.73,z);g.add(foot);
+      const col=new THREE.Mesh(new THREE.CylinderGeometry(.20,.25,6.25,14),i%2?timber:warmWood);
+      col.position.set(x,3.75,z);col.castShadow=!mobile;g.add(col);
+      const foot=new THREE.Mesh(new THREE.CylinderGeometry(.36,.42,.28,14),stone);
+      foot.position.set(x,.78,z);g.add(foot);
     }));
 
     zs.forEach(z=>{
-      const beam=new THREE.Mesh(new THREE.BoxGeometry(mobile?10.8:14.2,.34,.38),timberDark);
-      beam.position.set(0,6.02,z);beam.castShadow=!mobile;g.add(beam);
-      const beam2=new THREE.Mesh(new THREE.BoxGeometry(mobile?10.2:13.5,.18,.26),warmWood);
-      beam2.position.set(0,5.55,z);g.add(beam2);
+      const beam=new THREE.Mesh(new THREE.BoxGeometry(mobile?10.9:14.4,.40,.42),timberDark);
+      beam.position.set(0,6.78,z);beam.castShadow=!mobile;g.add(beam);
+      const beam2=new THREE.Mesh(new THREE.BoxGeometry(mobile?10.4:13.7,.20,.28),warmWood);
+      beam2.position.set(0,6.30,z);g.add(beam2);
     });
+
+    const frontRail=new THREE.Mesh(new THREE.BoxGeometry(mobile?10.7:13.9,.22,.26),warmWood);
+    frontRail.position.set(0,5.64,mobile?-33.72:-33.48);g.add(frontRail);
 
     const sideX=mobile?5.15:6.65;
     [-1,1].forEach(s=>{
-      const side=new THREE.Mesh(new THREE.BoxGeometry(.34,.34,mobile?3.55:4.35),timberDark);
-      side.position.set(s*sideX,6.02,-35.5);g.add(side);
+      const side=new THREE.Mesh(new THREE.BoxGeometry(.36,.40,mobile?3.9:4.7),timberDark);
+      side.position.set(s*sideX,6.78,-35.8);g.add(side);
     });
 
-    const back=new THREE.Mesh(new THREE.BoxGeometry(mobile?10.4:13.2,3.5,.34),new THREE.MeshStandardMaterial({color:0x211916,roughness:.94,metalness:0}));
-    back.position.set(0,3.1,-38.5);g.add(back);
+    const back=new THREE.Mesh(new THREE.BoxGeometry(mobile?10.8:13.7,4.6,.38),new THREE.MeshStandardMaterial({color:0x271b17,roughness:.93,metalness:0}));
+    back.position.set(0,3.15,-38.42);g.add(back);
 
-    const innerGlow=new THREE.Mesh(new THREE.PlaneGeometry(mobile?8.5:10.6,3.3),new THREE.MeshBasicMaterial({color:0xff8b3f,transparent:true,opacity:mobile?.085:.13,depthWrite:false,fog:true,blending:THREE.AdditiveBlending}));
-    innerGlow.position.set(0,3.25,-38.25);g.add(innerGlow);
+    const glowMat=new THREE.MeshBasicMaterial({color:0xff9a52,transparent:true,opacity:mobile?.11:.16,depthWrite:false,fog:true,blending:THREE.AdditiveBlending});
+    const panelXs=mobile?[-3.0,0,3.0]:[-4.2,-1.4,1.4,4.2];
+    panelXs.forEach(x=>{
+      const panel=new THREE.Mesh(new THREE.PlaneGeometry(mobile?2.1:2.35,3.45),glowMat.clone());
+      panel.position.set(x,3.32,-38.18);g.add(panel);
+      const top=new THREE.Mesh(new THREE.BoxGeometry(mobile?2.18:2.45,.10,.12),lattice);top.position.set(x,5.06,-38.05);g.add(top);
+      const bottom=new THREE.Mesh(new THREE.BoxGeometry(mobile?2.18:2.45,.10,.12),lattice);bottom.position.set(x,1.60,-38.05);g.add(bottom);
+      [-1,1].forEach(s=>{const jamb=new THREE.Mesh(new THREE.BoxGeometry(.10,3.55,.12),lattice);jamb.position.set(x+s*(mobile?1.04:1.17),3.32,-38.05);g.add(jamb);});
+    });
 
     scene.add(g);
     return g;
@@ -90,40 +101,37 @@ const block = String.raw`${marker}
     k.scene.userData.fajPendopoBodyFix=true;
     const {scene}=k;
 
-    /* The photographic pendopo had been pushed too close and too large, so the
-       roof filled the frame and hid the building underneath. Use it as the
-       distant roof/inner-hall plate, not as the whole structure. */
+    /* Keep the photographic plate as roof/texture support only. The readable
+       lower facade now comes from real geometry so the camera sees columns,
+       deck, beams and the rear wall instead of one giant roof crop. */
     const pend=role(scene,'pendopo')[0];
-    setLayer(pend,{x:0,y:7.55,z:mobile?-36.3:-37.1,scale:mobile?.80:.78,opacity:.90,depthWrite:true});
-    if(pend&&pend.material)pend.material.color.setHex(0xf2d7bc);
+    setLayer(pend,{x:0,y:8.15,z:mobile?-37.1:-37.7,scale:mobile?.72:.68,opacity:mobile?.64:.68,depthWrite:true});
+    if(pend&&pend.material)pend.material.color.setHex(0xe7cfb6);
 
-    /* Recompose the separated architectural plates into a readable facade.
-       Their userData bases are updated too, so the scene-rhythm pass animates
-       around these positions instead of snapping them back to the old ones. */
     const base=role(scene,'pendopo-base-v2')[0];
-    setLayer(base,{x:0,y:2.45,z:mobile?-34.8:-35.2,scale:mobile?.90:.96,opacity:mobile?.58:.70});
+    setLayer(base,{x:0,y:2.55,z:mobile?-35.1:-35.5,scale:mobile?.94:1.0,opacity:mobile?.72:.82});
 
     const roof=role(scene,'pendopo-roof-v2')[0];
-    setLayer(roof,{x:0,y:8.95,z:mobile?-36.0:-36.6,scale:mobile?.82:.86,opacity:mobile?.46:.56});
+    setLayer(roof,{x:0,y:9.15,z:mobile?-36.5:-37.0,scale:mobile?.78:.82,opacity:mobile?.38:.44});
 
     const beam=role(scene,'pendopo-beam-v2')[0];
-    setLayer(beam,{x:0,y:6.45,z:-35.1,scale:.93,opacity:mobile?.50:.66});
+    setLayer(beam,{x:0,y:6.70,z:-35.25,scale:.96,opacity:mobile?.68:.82});
 
     const pillars=role(scene,'pendopo-pillar-v2');
-    if(pillars[0])setLayer(pillars[0],{x:mobile?-4.6:-5.9,y:4.85,z:-34.7,scale:mobile?.84:.92,opacity:mobile?.54:.72});
-    if(pillars[1])setLayer(pillars[1],{x:mobile?4.6:5.9,y:4.85,z:-34.9,scale:mobile?.84:.92,opacity:mobile?.52:.70});
+    if(pillars[0])setLayer(pillars[0],{x:mobile?-4.8:-6.1,y:4.95,z:-34.85,scale:mobile?.90:.96,opacity:mobile?.76:.88});
+    if(pillars[1])setLayer(pillars[1],{x:mobile?4.8:6.1,y:4.95,z:-35.05,scale:mobile?.90:.96,opacity:mobile?.74:.86});
 
     const ornament=role(scene,'pendopo-ornament-v2')[0];
-    setLayer(ornament,{x:0,y:7.65,z:-34.6,scale:.90,opacity:mobile?.28:.38});
+    setLayer(ornament,{x:0,y:7.72,z:-34.75,scale:.90,opacity:mobile?.24:.32});
 
     const body=buildBody(scene);
 
-    /* A low warm spill under the eaves makes the columns read as a physical
-       volume and visually attaches the roof to the floor. */
-    const fill=new THREE.PointLight(0xff9347,mobile?.82:1.45,mobile?18:24,2);
-    fill.name='FAJ_Pendopo_Body_Fill_V4';fill.position.set(0,4.2,-34.7);scene.add(fill);
+    const fill=new THREE.PointLight(0xff9347,mobile?1.30:2.20,mobile?20:28,2);
+    fill.name='FAJ_Pendopo_Body_Fill_V4';fill.position.set(0,4.15,-35.2);scene.add(fill);
+    const frontFill=new THREE.PointLight(0xd7b08a,mobile?.38:.70,mobile?14:18,2);
+    frontFill.name='FAJ_Pendopo_Front_Fill_V4';frontFill.position.set(0,4.8,-31.8);scene.add(frontFill);
 
-    window.__fajPendopoBodyFix={installed:true,body,fill};
+    window.__fajPendopoBodyFix={installed:true,body,fill,frontFill};
     document.documentElement.dataset.fajPendopo='full-body-v4';
     return true;
   }
@@ -139,4 +147,4 @@ const block = String.raw`${marker}
 if (!html.includes('</body>')) throw new Error('Cirebon pendopo body-fix body anchor missing');
 html = html.replace('</body>', block + '\n</body>');
 await writeFile(file, html, 'utf8');
-console.log('Cirebon pendopo full-body fix applied.');
+console.log('Cirebon pendopo full-body fix applied with visible columns, deck and rear facade.');
