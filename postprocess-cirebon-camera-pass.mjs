@@ -16,7 +16,7 @@ const to = `const CAM = [
   { p: [ -4.2, 2.65,  7.4 ], t: [  0.8, 5.20, -12.5 ], fov: 44 },  /* 1 SAMAR — approach */
   { p: [  1.0, 3.35,-10.8 ], t: [ -0.4, 7.00, -28.0 ], fov: 39 }, /* 2 CLOSER — through gate */
   { p: [  4.4, 2.55,-24.5 ], t: [ -1.8, 7.80, -42.0 ], fov: 43 }, /* 3 Diablo — court/stairs */
-  { p: [  0.0, 7.20,-36.0 ], t: [  0.0, 12.5, -48.0 ], fov: 40 }, /* 4 Now — pendopo reveal */`;
+  { p: [ -0.8, 4.85,-25.8 ], t: [  0.0, 5.85, -39.6 ], fov: 43 }, /* 4 Now — full pendopo reveal */`;
 
 if (!html.includes(from)) throw new Error('Cirebon camera-pass anchor missing');
 html = html.replace(from, to);
@@ -26,4 +26,4 @@ if (/ChoSSI|\/work\/chossi\//i.test(html)) throw new Error('Camera pass reintrod
 if (/<b>Mausu<\/b>|>Mausu</i.test(html)) throw new Error('Camera pass found shortened Mausu Bouqet');
 
 await writeFile(file, html, 'utf8');
-console.log('Cirebon camera choreography now passes through the gapura into the court.');
+console.log('Cirebon camera choreography now passes through the gapura and stops far enough back to reveal the full pendopo.');
