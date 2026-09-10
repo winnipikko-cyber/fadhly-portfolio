@@ -1,0 +1,1 @@
+Deploy trigger after Vercel daily limit reset. Final V3 composition fix is already included in package.json build chain.
