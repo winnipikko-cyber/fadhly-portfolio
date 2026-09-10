@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "node build-static.mjs && node build-cirebon.mjs && node optimize-cirebon.mjs && node postprocess-cirebon-portfolio.mjs && node postprocess-cirebon-depth-v2.mjs && node postprocess-cirebon-copy-polish.mjs && node postprocess-cirebon-hide-chossi.mjs && node postprocess-cirebon-speed-perf.mjs && node postprocess-cirebon-camera-pass.mjs && node postprocess-cirebon-scene-rhythm.mjs && node postprocess-cirebon-choreography-fix.mjs && node postprocess-cirebon-integrity-fix.mjs && node postprocess-cirebon-mobile-budget.mjs && node postprocess-cirebon-kage-atmosphere.mjs && node postprocess-cirebon-hosted-paths.mjs && node postprocess-cirebon-build-meta.mjs"
+    "build": "node build-static.mjs && node build-cirebon.mjs && node optimize-cirebon.mjs && node postprocess-cirebon-portfolio.mjs && node postprocess-cirebon-depth-v2.mjs && node postprocess-cirebon-copy-polish.mjs && node postprocess-cirebon-hide-chossi.mjs && node postprocess-cirebon-speed-perf.mjs && node postprocess-cirebon-camera-pass.mjs && node postprocess-cirebon-scene-rhythm.mjs && node postprocess-cirebon-choreography-fix.mjs && node postprocess-cirebon-integrity-fix.mjs && node postprocess-cirebon-mobile-budget.mjs && node postprocess-cirebon-kage-atmosphere.mjs && node postprocess-cirebon-live-cleanup.mjs && node postprocess-cirebon-hosted-paths.mjs && node postprocess-cirebon-build-meta.mjs"
   }
 }
